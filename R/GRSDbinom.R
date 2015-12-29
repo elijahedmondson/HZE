@@ -3,7 +3,7 @@
 #' Performs association mapping in multiparent mouse populations.
 #' @export
 
-GRSDbinom = function(obj, pheno, pheno.col, tx) {
+GRSDbinom = function(obj, pheno, pheno.col, addcovar, tx) {
 
         chr = obj$markers[1,2]
 

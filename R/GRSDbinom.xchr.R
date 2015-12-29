@@ -4,7 +4,7 @@
 #' @export
 
 
-GRSDbinom.xchr = function(obj, pheno, pheno.col, tx) {
+GRSDbinom.xchr = function(obj, pheno, pheno.col, addcovar, tx) {
 
         chr = obj$markers[1,2]
 

@@ -79,13 +79,72 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
 
         for(i in 1:19) {
                 print(i)
-                result[[i]] = GRSDbinom(data[[i]], pheno, pheno.col, tx)
+                result[[i]] = GRSDbinom(data[[i]], pheno, pheno.col, addcovar, tx)
         } #for(i)
 
         print("X")
-        result[["X"]] = GRSDbinom.xchr(data[["X"]])
+        result[["X"]] = GRSDbinom.xchr(data[["X"]], pheno, pheno.col, addcovar, tx)
 
         print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
+                    "hours elapsed during mapping."))
+
+
+        #Plotting
+        plotter <- Sys.time()
+
+        setwd(outdir)
+        files = dir(pattern = file.prefix)
+        files = files[files != paste0(file.prefix, ".Rdata")]
+        png.files = grep("png$", files)
+        if(length(png.files) > 0) {
+                files = files[-png.files]
+        }
+        num = gsub(paste0("^", file.prefix, "_chr|\\.Rdata$"), "", files)
+        files = files[order(as.numeric(num))]
+
+        data = vector("list", length(files))
+        names(data) = num[order(as.numeric(num))]
+        for(i in 1:length(files)) {
+
+                print(i)
+                load(files[i])
+                data[[i]] = pv
+                data[[i]][,6] = -log10(data[[i]][,6])
+
+        } # for(i)
+
+        num.snps = sapply(data, nrow)
+        chrs = c(1:19, "X")
+
+        xlim = c(0, sum(num.snps))
+        ylim = c(0, max(sapply(data, function(z) { max(z[,6]) })))
+
+
+
+        # PLOT ALL CHROMOSOMES #
+
+        chrlen = get.chr.lengths()[1:20]
+        chrsum = cumsum(chrlen)
+        chrmid = c(1, chrsum[-length(chrsum)]) + chrlen * 0.5
+        names(chrmid) = names(chrlen)
+
+        png(paste0(file.prefix, "_QTL.png"), width = 2600, height = 1200, res = 200)
+        plot(-1, -1, col = 0, xlim = c(0, max(chrsum)), ylim = ylim, xlab = "",
+             ylab = "-log10(p-value)", las = 1, main = plot.title, xaxt = "n")
+        for(i in 1:length(data)) {
+                print(i)
+                pos = data[[i]][,3] * 1e-6 + c(0, chrsum)[i]
+                points(pos, data[[i]][,6], col = c("black", "grey50")[i %% 2 + 1],
+                       pch = 20)
+        } # for(i)
+        mtext(side = 1, line = 0.5, at = chrmid, text = names(chrlen), cex = 1.5)
+        dev.off()
+
+
+        save(result, xlim, ylim, file.prefix, plot.title,
+             file = paste0(file.prefix, "_plotting.Rdata"))
+
+        print(paste(round(difftime(Sys.time(), plotter, units = 'hours'), digits = 2),
                     "hours elapsed during mapping."))
 
 }

@@ -6,6 +6,6 @@
 
 Performs association mapping in multiparent mouse populations.}
 \usage{
-GRSDbinom(obj, pheno, pheno.col, tx)
+GRSDbinom(obj, pheno, pheno.col, addcovar, tx)
 }
 
