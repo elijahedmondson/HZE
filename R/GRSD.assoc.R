@@ -78,11 +78,11 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
         print(paste("Mapping with", length(samples), tx, "samples..."))
 
         for(i in 1:19) {
-                print(paste("Chromosome", i))
+                print(paste("CHROMOSOME", i))
                 result[[i]] = GRSDbinom(data[[i]], pheno, pheno.col, addcovar, tx)
         } #for(i)
 
-        print("X Chromosome")
+        print("X CHROMOSOME")
         result[["X"]] = GRSDbinom.xchr(data[["X"]], pheno, pheno.col, addcovar, tx)
 
         print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
@@ -130,7 +130,7 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
         plot(-1, -1, col = 0, xlim = c(0, max(chrsum)), ylim = ylim, xlab = "",
              ylab = "-log10(p-value)", las = 1, main = plot.title, xaxt = "n")
         for(i in 1:length(data)) {
-                print(i)
+                print(paste("Plotting chromosome", i))
                 pos = data[[i]][,3] * 1e-6 + c(0, chrsum)[i]
                 points(pos, data[[i]][,6], col = c("black", "grey50")[i %% 2 + 1],
                        pch = 20)
