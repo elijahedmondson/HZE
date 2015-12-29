@@ -75,10 +75,10 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
 
         result = vector("list", length(data))
         names(result) = names(data)
-        print(paste("Mapping with", length(samples), tx, "samples."))
+        print(paste("Mapping with", length(samples), tx, "samples..."))
 
         for(i in 1:19) {
-                print(i)
+                print("Plotting...")
                 result[[i]] = GRSDbinom(data[[i]], pheno, pheno.col, addcovar, tx)
         } #for(i)
 
@@ -141,10 +141,9 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
         dev.off()
 
 
-        save(result, xlim, ylim, file.prefix, plot.title,
-             file = paste0(file.prefix, "_plotting.Rdata"))
+        save(result, file.prefix, file = paste0(file.prefix, "_QTL.Rdata"))
 
         print(paste(round(difftime(Sys.time(), plotter, units = 'hours'), digits = 2),
-                    "hours elapsed during mapping."))
+                    "hours elapsed during plotting."))
 
 }
