@@ -78,18 +78,18 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
         print(paste("Mapping with", length(samples), tx, "samples..."))
 
         for(i in 1:19) {
-                print("Plotting...")
+                print(paste("Chromosome", i))
                 result[[i]] = GRSDbinom(data[[i]], pheno, pheno.col, addcovar, tx)
         } #for(i)
 
-        print("X")
+        print("X Chromosome")
         result[["X"]] = GRSDbinom.xchr(data[["X"]], pheno, pheno.col, addcovar, tx)
 
         print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
                     "hours elapsed during mapping."))
 
 
-        #Plotting
+        # PLOTTING
         plotter <- Sys.time()
 
         setwd(outdir)
@@ -104,9 +104,9 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
 
         data = vector("list", length(files))
         names(data) = num[order(as.numeric(num))]
+        print("Plotting...")
         for(i in 1:length(files)) {
 
-                print(i)
                 load(files[i])
                 data[[i]] = pv
                 data[[i]][,6] = -log10(data[[i]][,6])
@@ -118,8 +118,6 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
 
         xlim = c(0, sum(num.snps))
         ylim = c(0, max(sapply(data, function(z) { max(z[,6]) })))
-
-
 
         # PLOT ALL CHROMOSOMES #
 
