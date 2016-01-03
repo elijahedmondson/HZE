@@ -22,6 +22,7 @@
 GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
                       outdir = "~/Desktop/", tx = c("Gamma", "HZE", "Unirradiated")){
         begin <- Sys.time()
+        begin
         # COVARIATES #
 
         samples = intersect(rownames(pheno), rownames(probs))
