@@ -2,10 +2,12 @@
 
 export(GRSD.assoc)
 export(GRSD.poisson)
+export(GRSDassoc.perms)
 export(GRSDbinom)
 export(GRSDbinom.xchr)
 export(GRSDcoxph)
 export(GRSDcoxph.xchr)
 export(GRSDpoisson)
 export(GRSDpoisson.xchr)
+export(get.sig.thr)
 export(maxLOD)
