@@ -73,7 +73,7 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = TRUE,
                 #        min.a.pv = min(min.a.pv, min(result$pv))
                 #} #for(i)
 
-                result = GRSDbinom(data[[chr]], pheno = phenonew, pheno.col = "new", addcovar, tx)
+                result = GRSDbinom(data[[chr]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
                 min.a.pv = min(min.a.pv, min(result$pv))
 
                 min.x.pv = 1
