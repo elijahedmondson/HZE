@@ -4,16 +4,19 @@ library(DOQTL)
 setwd("/Users/elijah/Desktop/R/QTL/WD/Heatmap/")
 load(file = "~/Desktop/R/QTL/WD/__")
 
-pv = split(mcols(result[[1]])$pv, brks)
-pv = sapply(pv, min)
-pos = split(start(result[[chr]]), brks)
-pos = sapply(pos, mean)
-gr = GRanges(seqnames = seqnames(result[[chr]])[1],
-             ranges = IRanges(start = pos, width = 1), p.value = pv)
 
+# Taking a the output of GRSDassoc.map() -- a Large list of 20 data.frames --
+# and converting to a GRangesList
 
+chrs = c(1:19, "X")
+qtl = GRangesList(GRanges("list", length(result)))
 
-
+for(i in 1:length(chrs)) {
+        print(i)
+        qtl[[i]] <- GRanges(seqnames = Rle(result[[i]]$ID),
+                            ranges = IRanges(start = result[[i]]$POS, width = 1),
+                            p.value = result[[i]]$pv)
+} # for(i)
 
 
 
@@ -78,63 +81,6 @@ plot.hs.qtl = function(qtl, bin.width = 1000, ...) {
 
 } # plot.hs.qtl
 
-setwd("/Users/elijahedmondson/Desktop/R/QTL/WD/Heatmap/")
-
-load(file ="/Users/elijah/Desktop/R/QTL/WD/Mapping Files/HZE/AMQTL.Ectoderm.Rdata")
-qtl <- AM.qtl
-rm(AM.qtl)
-qtl.smaller = plot.hs.qtl(qtl)
-save(qtl.smaller, file = "HZE.Ectoderm.heatmap.Rdata")
-rm(qtl, qtl.smaller)
-
-load(file ="/Users/elijahedmondson/Desktop/R/QTL/WD/Mapping Files/HZE/AMQTL.Endoderm.Rdata")
-qtl <- AM.qtl
-rm(AM.qtl)
-qtl.smaller = plot.hs.qtl(qtl)
-save(qtl.smaller, file = "HZE.Endoderm.heatmap.Rdata")
-rm(qtl, qtl.smaller)
-
-load(file ="/Users/elijahedmondson/Desktop/R/QTL/WD/Mapping Files/HZE/AMQTL.Mesoderm.Rdata")
-qtl <- AM.qtl
-rm(AM.qtl)
-qtl.smaller = plot.hs.qtl(qtl)
-save(qtl.smaller, file = "HZE.Mesoderm.heatmap.Rdata")
-rm(qtl, qtl.smaller)
-
-load(file ="/Users/elijahedmondson/Desktop/R/QTL/WD/Mapping Files/Gamma/AMQTL.Ectoderm.Rdata")
-qtl <- AM.qtl
-rm(AM.qtl)
-qtl.smaller = plot.hs.qtl(qtl)
-save(qtl.smaller, file = "Gamma.Ectoderm.heatmap.Rdata")
-rm(qtl, qtl.smaller)
-
-load(file ="/Users/elijahedmondson/Desktop/R/QTL/WD/Mapping Files/Gamma/AMQTL.Endoderm.Rdata")
-qtl <- AM.qtl
-rm(AM.qtl)
-qtl.smaller = plot.hs.qtl(qtl)
-save(qtl.smaller, file = "Gamma.Endoderm.heatmap.Rdata")
-rm(qtl, qtl.smaller)
-
-load(file ="/Users/elijahedmondson/Desktop/R/QTL/WD/Mapping Files/Gamma/AMQTL.Mesoderm.Rdata")
-qtl <- AM.qtl
-rm(AM.qtl)
-qtl.smaller = plot.hs.qtl(qtl)
-save(qtl.smaller, file = "Gamma.Mesoderm.heatmap.Rdata")
-rm(qtl, qtl.smaller)
-
-load(file ="/Users/elijahedmondson/Desktop/R/QTL/WD/Mapping Files/Background/AMQTL.Ectoderm.Rdata")
-qtl <- AM.qtl
-rm(AM.qtl)
-qtl.smaller = plot.hs.qtl(qtl)
-save(qtl.smaller, file = "Background.Ectoderm.heatmap.Rdata")
-rm(qtl, qtl.smaller)
-
-load(file ="/Users/elijahedmondson/Desktop/R/QTL/WD/Mapping Files/Background/AMQTL.Endoderm.Rdata")
-qtl <- AM.qtl
-rm(AM.qtl)
-qtl.smaller = plot.hs.qtl(qtl)
-save(qtl.smaller, file = "Background.Endoderm.heatmap.Rdata")
-rm(qtl, qtl.smaller)
 
 load(file ="/Users/elijahedmondson/Desktop/R/QTL/WD/Mapping Files/Background/AMQTL.Mesoderm.Rdata")
 qtl <- AM.qtl
@@ -143,50 +89,11 @@ qtl.smaller = plot.hs.qtl(qtl)
 save(qtl.smaller, file = "Background.Mesoderm.heatmap.Rdata")
 rm(qtl, qtl.smaller)
 
-
-
-
-#Load all files for combination
-load(file="/Users/elijahedmondson/Desktop/R/QTL/WD/Heatmap/Background.Ectoderm.heatmap.Rdata")
-Background.Ectoderm <- qtl.smaller
-rm(qtl.smaller)
-
-load(file="/Users/elijahedmondson/Desktop/R/QTL/WD/Heatmap/Background.Endoderm.heatmap.Rdata")
-Background.Endoderm <- qtl.smaller
-rm(qtl.smaller)
-
-load(file="/Users/elijahedmondson/Desktop/R/QTL/WD/Heatmap/Background.Mesoderm.heatmap.Rdata")
-Background.Mesoderm <- qtl.smaller
-rm(qtl.smaller)
-
-load(file="/Users/elijahedmondson/Desktop/R/QTL/WD/Heatmap/HZE.Ectoderm.heatmap.Rdata")
-HZE.Ectoderm <- qtl.smaller
-rm(qtl.smaller)
-
-load(file="/Users/elijahedmondson/Desktop/R/QTL/WD/Heatmap/HZE.Endoderm.heatmap.Rdata")
-HZE.Endoderm <- qtl.smaller
-rm(qtl.smaller)
-
-load(file="/Users/elijahedmondson/Desktop/R/QTL/WD/Heatmap/HZE.Mesoderm.heatmap.Rdata")
-HZE.Mesoderm <- qtl.smaller
-rm(qtl.smaller)
-
-load(file="/Users/elijahedmondson/Desktop/R/QTL/WD/Heatmap/Gamma.Ectoderm.heatmap.Rdata")
-Gamma.Ectoderm <- qtl.smaller
-rm(qtl.smaller)
-
-load(file="/Users/elijahedmondson/Desktop/R/QTL/WD/Heatmap/Gamma.Endoderm.heatmap.Rdata")
-Gamma.Endoderm <- qtl.smaller
-rm(qtl.smaller)
-
 load(file="/Users/elijah/Desktop/R/QTL/WD/Heatmap/Gamma.Mesoderm.heatmap.Rdata")
 Gamma.Mesoderm <- qtl.smaller
 rm(qtl.smaller)
 
-combine <- cbind(seqnames=as.character(result[[1:2]]$ID), -log10(result[[1]]$pv) -log10(result[[2]]$pv))
-
 #Combining the columns
-combined <- cbind(seqnames=as.character(seqnames))
 
 combined <- cbind(seqnames=as.character(seqnames(HZE.Mesoderm)),
                   -log10(Background.Ectoderm$p.value),
@@ -201,15 +108,7 @@ combined <- cbind(seqnames=as.character(seqnames(HZE.Mesoderm)),
 head(combined)
 heatmap(combined, Rowv = NA)
 
-combined <- cbind(-log10(Background.Ectoderm$p.value),
-                  -log10(Background.Endoderm$p.value),
-                  -log10(Background.Mesoderm$p.value),
-                  -log10(HZE.Ectoderm$p.value),
-                  -log10(HZE.Endoderm$p.value),
-                  -log10(HZE.Mesoderm$p.value),
-                  -log10(Gamma.Ectoderm$p.value),
-                  -log10(Gamma.Endoderm$p.value),
-                  -log10(Gamma.Mesoderm$p.value))
+
 
 ##with heatmap.2()
 mypalette <- colorRampPalette(c("green", "yellow", "red"))(n = 299)
