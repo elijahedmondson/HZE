@@ -139,8 +139,18 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
         mtext(side = 1, line = 0.5, at = chrmid, text = names(chrlen), cex = 1.5)
         dev.off()
 
+        # Convert to GRangesList for storage
+        chrs = c(1:19, "X")
+        qtl = GRangesList(GRanges("list", length(result)))
 
-        save(result, file.prefix, file = paste0(file.prefix, "_QTL.Rdata"))
+        for(i in 1:length(chrs)) {
+                print(i)
+                qtl[[i]] <- GRanges(seqnames = Rle(result[[i]]$CHR),
+                                    ranges = IRanges(start = result[[i]]$POS, width = 1),
+                                    p.value = result[[i]]$pv)
+        } # for(i)
+
+        save(qtl, file.prefix, file = paste0(file.prefix, "_QTL.Rdata"))
 
         print(paste(round(difftime(Sys.time(), plotter, units = 'hours'), digits = 2),
                     "hours elapsed during plotting."))
