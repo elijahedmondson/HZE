@@ -1,4 +1,4 @@
-#' @title Plot function (w/ binning to average markers and max LOD)
+#' @title Convert a Large list of data.frames into a GRangesList
 #' @export
 
 GRconvert = function(result) {
@@ -15,5 +15,7 @@ GRconvert = function(result) {
                                     ranges = IRanges(start = result[[i]]$POS, width = 1),
                                     p.value = result[[i]]$pv)
         } # for(i)
+
+        return(qtl)
 
 }

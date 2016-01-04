@@ -1,3 +1,5 @@
+#' @title Loop through to create a smaller file for heatmap input
+#' @export
 
 loop.hs.qtl = function(result, bin.width = 1000, ...) {
 
