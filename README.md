@@ -1,4 +1,4 @@
-# Ground-based Radiation Study (HZE ions)
+# Ground-based Radiation Study (HZE ions): Association mapping for radiation-induced phenotypes
 Elijah Edmondson <elijah.edmondson@gmail.com>
 
 This package contains R code optimized for mapping and plotting genome wide association studies in heterogenous stock mice for binary phenotypes, such as neoplasia, and time-to-event data, such as tumor latency, to reveal genomic loci that confer susceptibility or resistance to radiation-associated phenotypes. Significane for each QTL experiment can be calculated utilizing permutation test functions within this package. In addition, this package includes functions that utilize heatmaps generated from multiple QTL to perform hierarchical clustering which seek to reveal potentially conincident loci between different phenotypes within the same radiation exposure groups.
