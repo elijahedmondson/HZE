@@ -70,7 +70,7 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
 
         setwd(outdir)
 
-
+        setwd(outdir)
 
         # MAPPING ANALYSES #
 
@@ -121,7 +121,7 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
         ylim = c(0, max(sapply(data, function(z) { max(z[,6]) })))
 
         # PLOT ALL CHROMOSOMES #
-
+        setwd(outdir)
         chrlen = get.chr.lengths()[1:20]
         chrsum = cumsum(chrlen)
         chrmid = c(1, chrsum[-length(chrsum)]) + chrlen * 0.5
