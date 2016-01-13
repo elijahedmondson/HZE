@@ -4,6 +4,6 @@
 \alias{GRconvert}
 \title{Convert a Large list of data.frames into a GRangesList}
 \usage{
-GRconvert(result)
+GRconvert(file)
 }
 

@@ -68,12 +68,12 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = TRUE,
 
                 min.a.pv = 1
 
-                #for(i in length(chr)) {
-                #        result = GRSDbinom(data[[i]], pheno, pheno.col, addcovar, tx)
-                #        min.a.pv = min(min.a.pv, min(result$pv))
-                #} #for(i)
+                for(i in length(chr)) {
+                        result = GRSDbinom(data[[i]], pheno, pheno.col = "trait", addcovar, tx)
+                        min.a.pv = min(min.a.pv, min(result$pv))
+                } #for(i)
 
-                result = GRSDbinom(data[[chr]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
+                #result = GRSDbinom(data[[chr]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
                 min.a.pv = min(min.a.pv, min(result$pv))
 
                 min.x.pv = 1
@@ -87,10 +87,11 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = TRUE,
 
 
         }
+        print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
+                    "hours elapsed during analysis"))
 
         save(permutations, file.prefix, file = paste0(file.prefix, "_perms.Rdata"))
         return(permutations)
-        print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
-                    "hours elapsed during analysis"))
+
 
 }

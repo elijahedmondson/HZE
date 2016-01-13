@@ -4,6 +4,6 @@
 \alias{loop.hs.qtl}
 \title{Loop through to create a smaller file for heatmap input}
 \usage{
-loop.hs.qtl(result, bin.width = 1000, ...)
+loop.hs.qtl(qtl, title, bin.width = 1000, ...)
 }
 

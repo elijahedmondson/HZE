@@ -1,7 +1,9 @@
 #' @title Convert a Large list of data.frames into a GRangesList
 #' @export
 
-GRconvert = function(result) {
+GRconvert = function(file) {
+        load(file = file)
+        result = qtl
         library(GenomicRanges)
         library(BSgenome.Mmusculus.UCSC.mm10)
         library(DOQTL)
@@ -15,7 +17,7 @@ GRconvert = function(result) {
                                     ranges = IRanges(start = result[[i]]$POS, width = 1),
                                     p.value = result[[i]]$pv)
         } # for(i)
-
+        save(qtl, file.prefix, file = paste0(file.prefix, "_GR_QTL.Rdata"))
         return(qtl)
 
 }

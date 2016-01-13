@@ -1,14 +1,15 @@
 #' @title Loop through to create a smaller file for heatmap input
 #' @export
 
-loop.hs.qtl = function(result, bin.width = 1000, ...) {
-
+loop.hs.qtl = function(qtl, title, bin.width = 1000, ...) {
+        library(GenomicRanges)
+        library(BSgenome.Mmusculus.UCSC.mm10)
         new.qtl = NULL
         for(chr in 1:length(qtl)) {
 
                 print(chr)
 
-                # Create 100 SNP bins.
+                # Create SNP bins with given bin.width
                 brks = cut(x = 1:length(qtl[[chr]]), breaks = length(qtl[[chr]]) / bin.width)
                 # Split up the SNP positions and get the mean.
                 pos = split(start(qtl[[chr]]), brks)
@@ -52,7 +53,7 @@ loop.hs.qtl = function(result, bin.width = 1000, ...) {
         even.chr = which(seqnames(new.qtl) %in% (1:10 * 2))
         col[even.chr] = rgb(0.7,0.7,0.7)
         plot(gmb, -log10(new.qtl$p.value), pch = 20, xaxt = "n",
-             col = col, las = 1, xlab = "", ylab = "-log10(p-value)", ...)
+             col = col, las = 1, xlab = "", ylab = "-log10(p-value)", main = title)
         mtext(side = 1, line = 0.5, at = chrmid, text = names(chrlen), cex = 1.2)
 
         return(new.qtl)
