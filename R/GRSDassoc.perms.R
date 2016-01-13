@@ -69,7 +69,7 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = TRUE,
                 min.a.pv = 1
 
                 for(i in length(chr)) {
-                        result = GRSDbinom(data[[i]], pheno, pheno.col = "trait", addcovar, tx)
+                        result = GRSDbinom(data[[i]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
                         min.a.pv = min(min.a.pv, min(result$pv))
                 } #for(i)
 
@@ -79,7 +79,7 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = TRUE,
                 min.x.pv = 1
 
                 if(Xchr) {
-                        result = GRSDbinom.xchr(data[["X"]], pheno, pheno.col, addcovar, tx)
+                        result = GRSDbinom.xchr(data[["X"]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
                         min.x.pv = min(result$pv)
                 }
                 # Save the minimum p-values.
