@@ -4,7 +4,7 @@
 \alias{GRSDcoxph.xchr}
 \title{Association mapping with survival outcomes using the CoxPH model.}
 \usage{
-GRSDcoxph.xchr(obj)
+GRSDcoxph.xchr(obj, pheno, surv, addcovar, tx)
 }
 \description{
 Performs association mapping in multiparent mouse populations.

@@ -1,9 +1,9 @@
-#' @title Genome wide association mapping for binary phenotypes.
+#' @title Genome wide association mapping using CoxPH
 #' @author Elijah F. Edmondson <elijah.edmondson@gmail.com>
 #' @details Dec. 29, 2015
 #' @param pheno: data.frame containing phenotypes in columns and samples in
 #'                   rows. Rownames must contain sample IDs.
-#' @param pheno.col: the phenotype column to map.
+#' @param pheno.col: the phenotype column to map. surv = Surv(pheno$cat.days, pheno$cataract)
 #' @param probs: 3D numeric array containing the haplotype probabilities
 #'                   for each sample. Samples in rows, founders in columns,
 #'                   markers in slices. Samnple IDs must be in rownames. Marker
@@ -19,8 +19,8 @@
 #' @export
 
 
-GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
-                      outdir = "~/Desktop/", tx = c("Gamma", "HZE", "Unirradiated")){
+GRSD.coxph = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
+                      outdir = "~/Desktop/files/", tx = c("Gamma", "HZE", "Unirradiated")){
         begin <- Sys.time()
         begin
         # COVARIATES #
@@ -35,21 +35,23 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
         addcovar = addcovar[samples,,drop = FALSE]
         probs = probs[samples,,,drop = FALSE]
 
-
-
-        # DEFINE TRAIT #
-
         file.prefix = paste(tx, pheno.col, sep = "_")
-
+        print(file.prefix)
         plot.title = paste(tx, pheno.col, sep = " ")
         print(plot.title)
 
-        trait = pheno[,pheno.col]
-        print(table(trait))
-        print(paste(round(100*(sum(trait) / length(samples)), digits = 1),
-                    "% display the", pheno.col, "phenotype in the", tx, "group."))
+        # COX PH MODEL #
+        surv = Surv(pheno$days, pheno[,pheno.col])
+        fit = survfit(surv ~ addcovar)
+        plot(fit, col = 1:2, las = 1, main = plot.title)
+        legend("bottomleft", col = 1:2, lty = 1, legend = c("female", "male"))
+        mod = coxph(surv ~ addcovar)
+        text(x = 25, y = 0.15, labels = paste("p =", format(anova(mod)[2,4],
+                                                            digits = 2)), adj = 0)
+        #print(paste(round(100*(sum(trait) / length(samples)), digits = 1),
+        #            "% display the", pheno.col, "phenotype in the", tx, "group."))
 
-        # LOGISTIC REGRESSION MODEL #
+        # REGRESSION MODEL #
 
         for(i in 1:length(K)) {
                 K[[i]] = K[[i]][samples, samples]
@@ -68,9 +70,7 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
 
         rm(probs, K, markers)
 
-        setwd(outdir)
-
-        setwd(outdir)
+        setwd = outdir
 
         # MAPPING ANALYSES #
 
@@ -80,32 +80,20 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
 
         for(i in 1:19) {
                 print(paste("CHROMOSOME", i))
-                result[[i]] = GRSDbinom(data[[i]], pheno, pheno.col, addcovar, tx)
+                result[[i]] = GRSDcoxph(data[[i]], pheno, surv, addcovar, tx)
         } #for(i)
 
         print("X CHROMOSOME")
-        result[["X"]] = GRSDbinom.xchr(data[["X"]], pheno, pheno.col, addcovar, tx)
+        result[["X"]] = GRSDcoxph.xchr(data[["X"]], pheno, surv, addcovar, tx)
 
         print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
                     "hours elapsed during mapping."))
-
-        # Convert to GRangesList for storage
-        chrs = c(1:19, "X")
-        qtl = GRangesList(GRanges("list", length(result)))
-
-        for(i in 1:length(chrs)) {
-                print(i)
-                qtl[[i]] <- GRanges(seqnames = Rle(result[[i]]$CHR),
-                                    ranges = IRanges(start = result[[i]]$POS, width = 1),
-                                    p.value = result[[i]]$pv)
-        } # for(i)
-
-        save(qtl, file.prefix, file = paste(tx, pheno.col, sep = ".", "_QTL.Rdata"))
 
 
         # PLOTTING
         plotter <- Sys.time()
 
+        setwd = outdir
         files = dir(pattern = file.prefix)
         files = files[files != paste0(file.prefix, ".Rdata")]
         png.files = grep("png$", files)
@@ -133,13 +121,13 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
         ylim = c(0, max(sapply(data, function(z) { max(z[,6]) })))
 
         # PLOT ALL CHROMOSOMES #
-        setwd(outdir)
+
         chrlen = get.chr.lengths()[1:20]
         chrsum = cumsum(chrlen)
         chrmid = c(1, chrsum[-length(chrsum)]) + chrlen * 0.5
         names(chrmid) = names(chrlen)
 
-        png(paste0(file.prefix, "_QTL.png"), width = 2600, height = 1200, res = 200)
+        png(paste0(file.prefix, "_QTL.png"), width = 2600, height = 1200, res = 230)
         plot(-1, -1, col = 0, xlim = c(0, max(chrsum)), ylim = ylim, xlab = "",
              ylab = "-log10(p-value)", las = 1, main = plot.title, xaxt = "n")
         for(i in 1:length(data)) {

@@ -3,11 +3,10 @@
 #' Performs association mapping in multiparent mouse populations.
 #' @export
 
-GRSDcoxph = function(obj) {
+GRSDcoxph = function(obj, pheno, surv, addcovar, tx) {
 
         chr = obj$markers[1,2]
 
-        setwd(outdir)
 
 
         strains = sub("/", "_", hs.colors[,2])

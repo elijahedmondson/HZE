@@ -3,11 +3,10 @@
 #' Performs association mapping in multiparent mouse populations.
 #' @export
 
-GRSDcoxph.xchr = function(obj) {
+GRSDcoxph.xchr = function(obj, pheno, surv, addcovar, tx) {
 
         chr = obj$markers[1,2]
 
-        setwd(outdir)
 
         # Get the Sanger SNPs.
         ###DMG

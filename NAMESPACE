@@ -2,6 +2,8 @@
 
 S3method(plot,hs)
 export(GRSD.assoc)
+export(GRSD.coxph)
+export(GRSD.coxph1)
 export(GRSD.poisson)
 export(GRSDassoc.perms)
 export(GRSDbinom)
