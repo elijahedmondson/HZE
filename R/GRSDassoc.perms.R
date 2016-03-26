@@ -23,7 +23,7 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = FALSE,
         file.prefix = paste(tx, pheno.col, sep = "_")
 
         plot.title = paste(tx, pheno.col, sep = " ")
-        print(plot.title)
+        print(paste(plot.title), "Permutation Analysis:", Sys.time())
 
         trait = pheno[,pheno.col]
 

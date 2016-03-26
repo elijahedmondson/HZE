@@ -2,33 +2,35 @@
 #' @author Elijah F. Edmondson <elijah.edmondson@gmail.com>
 #' @export
 
-Scanone.assoc.perms = function(perms, chr = 1:19, Xchr = FALSE,
-                           pheno, pheno.col, probs, K, addcovar,
-                           markers, snp.file, outdir = "~/Desktop/files",
-                           tx = "", ncl = 4) {
+Scanone.assoc.perms = function(perms, pheno = pheno, pheno.col = "AML", probs = model.probs, K = K,
+                               addcovar = addcovar, markers = MM_snps, sdp.file = sdp.file, ncl = 4) {
         begin <- Sys.time()
-
-
+        print(paste(pheno.col, "Permutation Analysis:", Sys.time(), sep = " "))
         females = which(pheno$sex == "0")
         males = which(pheno$sex == "1")
-
-        perms = matrix(1, nrow = perms, ncol = 2, dimnames = list(1:perms, c("A", "X")))
+        sdp.file = sdp.file
+        ncl = ncl
+        permutations = matrix(1, nrow = perms, ncol = 2, dimnames = list(1:perms, c("A", "X")))
 
         for(p in 1:perms) {
                 print(p)
                 LODtime = Sys.time()
-                new.order = rep(0, length(trait))
+                new.order = rep(0, length(pheno[,pheno.col]))
                 new.order[females] = sample(females)
                 new.order[males] = sample(males)
 
-                log.perm = trait[new.order]
-                trait = log.perm
+                X.frame = rep("X", length(new.order))
 
-                phenonew = data.frame(cbind("sex" = pheno$sex, trait))
+                row.names = data.frame(X.frame, new.order)
+                row.names = apply(row.names, 1, paste, collapse="")
+
+                phenoperm = data.frame(row.names = row.names, sex = as.numeric(pheno$sex == "1"),
+                                       "2" = as.numeric(pheno[,pheno.col]))
 
                 min.a.pv = 1
 
-                qtl = scanone.assoc(pheno = phenonew, pheno.col = 11, probs = model.probs, K = K, addcovar, markers = MM_snps, sdp.file = sdp.file, ncl = 4)
+                qtl = scanone.assoc(pheno = phenoperm, pheno.col = 2, probs = model.probs, K = K, addcovar,
+                                    markers = MM_snps, sdp.file = sdp.file, ncl = 4)
 
                 min.a.pv = min(min.a.pv, min(qtl$`1`@elementMetadata$p.value),
                                min(qtl$`2`@elementMetadata$p.value),
@@ -48,8 +50,9 @@ Scanone.assoc.perms = function(perms, chr = 1:19, Xchr = FALSE,
                                min(qtl$`17`@elementMetadata$p.value),
                                min(qtl$`18`@elementMetadata$p.value),
                                min(qtl$`19`@elementMetadata$p.value))
+                min.x.pv = min(qtl$`X`@elementMetadata$p.value)
 
-                perms[p,] = c(-log10(min.a.pv), -log10(min(qtl$`X`@elementMetadata$p.value)))
+                permutations[p,] = c(-log10(min.a.pv), -log10(min(min.x.pv)))
 
                 print(paste("Max random autosomal LOD was", -log10(min.a.pv), "X chr", -log10(min.x.pv)))
                 print(paste(round(difftime(Sys.time(), LODtime, units = 'mins'), digits = 2),

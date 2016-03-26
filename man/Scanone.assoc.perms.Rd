@@ -4,9 +4,9 @@
 \alias{Scanone.assoc.perms}
 \title{Permutation analysis for continuous traits in HZE ion exposed genetically heterogeneous mice.}
 \usage{
-Scanone.assoc.perms(perms, chr = 1:19, Xchr = FALSE, pheno, pheno.col,
-  probs, K, addcovar, markers, snp.file, outdir = "~/Desktop/files",
-  tx = "")
+Scanone.assoc.perms(perms, pheno = pheno, pheno.col = "AML",
+  probs = model.probs, K = K, addcovar = addcovar, markers = MM_snps,
+  sdp.file = sdp.file, ncl = 4)
 }
 \author{
 Elijah F. Edmondson <elijah.edmondson@gmail.com>
