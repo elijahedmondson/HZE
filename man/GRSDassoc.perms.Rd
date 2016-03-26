@@ -4,9 +4,8 @@
 \alias{GRSDassoc.perms}
 \title{Permutation analysis for HZE.}
 \usage{
-GRSDassoc.perms(perms, chr = 1:19, Xchr = TRUE, pheno,
-  pheno.col = "Albino", probs, K, addcovar, markers, snp.file,
-  outdir = "~/Desktop/files", tx = "Unirradiated")
+GRSDassoc.perms(perms, chr = 1:19, Xchr = FALSE, pheno, pheno.col, probs, K,
+  addcovar, markers, snp.file, outdir = "~/Desktop/files", tx = "")
 }
 \author{
 Elijah F. Edmondson <elijah.edmondson@gmail.com>

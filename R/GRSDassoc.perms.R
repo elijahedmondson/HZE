@@ -2,10 +2,10 @@
 #' @author Elijah F. Edmondson <elijah.edmondson@gmail.com>
 #' @export
 
-GRSDassoc.perms = function(perms, chr = 1:19, Xchr = TRUE,
-                           pheno, pheno.col = "Albino", probs, K, addcovar,
+GRSDassoc.perms = function(perms, chr = 1:19, Xchr = FALSE,
+                           pheno, pheno.col, probs, K, addcovar,
                            markers, snp.file, outdir = "~/Desktop/files",
-                           tx = "Unirradiated") {
+                           tx = "") {
         begin <- Sys.time()
         begin
 
@@ -56,6 +56,7 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = TRUE,
         permutations = matrix(1, nrow = perms, ncol = 2, dimnames = list(1:perms, c("A", "X")))
 
         for(p in 1:perms) {
+                LODtime = Sys.time()
                 print(p)
                 new.order = rep(0, length(trait))
                 new.order[females] = sample(females)
@@ -69,22 +70,23 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = TRUE,
                 min.a.pv = 1
 
                 for(i in 1:length(chr)) {
-                        result = GRSDbinom(data[[i]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
+                        result = GRSDbinom.permsfast(data[[i]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
                         min.a.pv = min(min.a.pv, min(result$pv))
                 } #for(i)
 
-                #result = GRSDbinom(data[[chr]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
                 min.a.pv = min(min.a.pv, min(result$pv))
-
                 min.x.pv = 1
 
                 if(Xchr) {
-                        result = GRSDbinom.xchr(data[["X"]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
+                        result = GRSDbinom.xchr.permsfast(data[["X"]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
                         min.x.pv = min(result$pv)
                 }
+
                 # Save the minimum p-values.
                 permutations[p,] = c(-log10(min.a.pv), -log10(min.x.pv))
-
+                print(paste("Max random  LOD was", -log10(min.a.pv), -log10(min.x.pv)))
+                print(paste(round(difftime(Sys.time(), LODtime, units = 'mins'), digits = 2),
+                                  "minutes..."))
 
         }
         print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),

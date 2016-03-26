@@ -80,11 +80,14 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
 
         for(i in 1:19) {
                 print(paste("CHROMOSOME", i))
-                result[[i]] = GRSDbinom(data[[i]], pheno, pheno.col, addcovar, tx)
+                timechr <- Sys.time()
+                result[[i]] = GRSDbinom.fast(data[[i]], pheno, pheno.col, addcovar, tx)
+                print(paste(round(difftime(Sys.time(), timechr, units = 'mins'), digits = 2),
+                      "minutes..."))
         } #for(i)
 
         print("X CHROMOSOME")
-        result[["X"]] = GRSDbinom.xchr(data[["X"]], pheno, pheno.col, addcovar, tx)
+        result[["X"]] = GRSDbinom.xchr.fast(data[["X"]], pheno, pheno.col, addcovar, tx)
 
         print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
                     "hours elapsed during mapping."))
@@ -100,7 +103,6 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
                                     p.value = result[[i]]$pv)
         } # for(i)
 
-        save(qtl, file.prefix, file = paste(tx, pheno.col, sep = ".", "_QTL.Rdata"))
 
 
         # PLOTTING
