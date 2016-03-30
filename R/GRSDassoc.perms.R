@@ -4,8 +4,8 @@
 
 GRSDassoc.perms = function(perms, chr = 1:19, Xchr = FALSE,
                            pheno, pheno.col, probs, K, addcovar,
-                           markers, snp.file, outdir = "~/Desktop/files",
-                           tx = "") {
+                           markers, snp.file, outdir = "~/Dropbox/Rstudio.cloud/WD",
+                           tx = "", sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/") {
         begin <- Sys.time()
         begin
 
@@ -23,7 +23,7 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = FALSE,
         file.prefix = paste(tx, pheno.col, sep = "_")
 
         plot.title = paste(tx, pheno.col, sep = " ")
-        print(paste(plot.title), "Permutation Analysis:", Sys.time())
+        print(paste(plot.title, "Permutation Analysis:", Sys.time()))
 
         trait = pheno[,pheno.col]
 
@@ -54,7 +54,7 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = FALSE,
         males = which(pheno$sex == "1")
 
         permutations = matrix(1, nrow = perms, ncol = 2, dimnames = list(1:perms, c("A", "X")))
-
+        sanger.dir = sanger.dir
         for(p in 1:perms) {
                 LODtime = Sys.time()
                 print(p)
@@ -70,7 +70,7 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = FALSE,
                 min.a.pv = 1
 
                 for(i in 1:length(chr)) {
-                        result = GRSDbinom.permsfast(data[[i]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
+                        result = GRSDbinom.permsfast(data[[i]], pheno = phenonew, pheno.col = "trait", addcovar, tx, sanger.dir)
                         min.a.pv = min(min.a.pv, min(result$pv))
                 } #for(i)
 
@@ -78,7 +78,7 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = FALSE,
                 min.x.pv = 1
 
                 if(Xchr) {
-                        result = GRSDbinom.xchr.permsfast(data[["X"]], pheno = phenonew, pheno.col = "trait", addcovar, tx)
+                        result = GRSDbinom.xchr.permsfast(data[["X"]], pheno = phenonew, pheno.col = "trait", addcovar, tx, sanger.dir)
                         min.x.pv = min(result$pv)
                 }
 

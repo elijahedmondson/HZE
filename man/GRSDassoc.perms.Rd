@@ -5,7 +5,8 @@
 \title{Permutation analysis for HZE.}
 \usage{
 GRSDassoc.perms(perms, chr = 1:19, Xchr = FALSE, pheno, pheno.col, probs, K,
-  addcovar, markers, snp.file, outdir = "~/Desktop/files", tx = "")
+  addcovar, markers, snp.file, outdir = "~/Dropbox/Rstudio.cloud/WD",
+  tx = "", sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/")
 }
 \author{
 Elijah F. Edmondson <elijah.edmondson@gmail.com>
