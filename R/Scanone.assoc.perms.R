@@ -1,5 +1,5 @@
 #' @title Permutation analysis for continuous traits in HZE ion exposed genetically heterogeneous mice.
-#' @author Elijah F. Edmondson <elijah.edmondson@gmail.com>
+#' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @export
 
 Scanone.assoc.perms = function(perms, pheno = pheno, pheno.col = "AML", probs = model.probs, K = K,

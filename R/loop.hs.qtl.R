@@ -1,4 +1,5 @@
 #' @title Loop through to create a smaller file for heatmap input
+#' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @export
 
 loop.hs.qtl = function(qtl, title, bin.width = 1000, ...) {

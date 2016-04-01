@@ -1,4 +1,5 @@
 #' @title Plot function (w/ binning to average markers and max LOD)
+#' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @export
 
 plot.hs = function(qtl, bin.width = 1000, ...) {

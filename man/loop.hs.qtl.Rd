@@ -6,4 +6,7 @@
 \usage{
 loop.hs.qtl(qtl, title, bin.width = 1000, ...)
 }
+\author{
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
+}
 

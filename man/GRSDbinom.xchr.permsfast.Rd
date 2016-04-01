@@ -3,11 +3,14 @@
 \name{GRSDbinom.xchr.permsfast}
 \alias{GRSDbinom.xchr.permsfast}
 \title{Association mapping on the X chromosome with binary variable outcomes, optimized for speed by
-pre-formating sanger snps to sdp files.
-
-Performs association mapping in multiparent mouse populations.}
+pre-formating sanger snps to sdp files.}
 \usage{
 GRSDbinom.xchr.permsfast(obj, pheno, pheno.col, addcovar, tx,
   sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/")
+}
+\author{
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
+
+Performs association mapping in multiparent mouse populations.
 }
 

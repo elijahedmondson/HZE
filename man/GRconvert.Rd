@@ -6,4 +6,7 @@
 \usage{
 GRconvert(file)
 }
+\author{
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
+}
 

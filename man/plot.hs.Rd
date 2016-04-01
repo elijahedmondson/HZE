@@ -6,4 +6,7 @@
 \usage{
 \method{plot}{hs}(qtl, bin.width = 1000, ...)
 }
+\author{
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
+}
 

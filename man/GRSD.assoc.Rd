@@ -34,6 +34,6 @@ is created using condense.sanger.snps().}
 Dec. 29, 2015
 }
 \author{
-Elijah F. Edmondson <elijah.edmondson@gmail.com>
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
 }
 

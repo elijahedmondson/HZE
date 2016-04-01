@@ -2,10 +2,13 @@
 % Please edit documentation in R/GRSDpoisson.R
 \name{GRSDpoisson}
 \alias{GRSDpoisson}
-\title{Association mapping on autosomal chromosomes with binary variable outcomes.
-
-Performs association mapping in multiparent mouse populations.}
+\title{Association mapping on autosomal chromosomes with binary variable outcomes.}
 \usage{
 GRSDpoisson(obj, pheno, pheno.col, tx)
+}
+\author{
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
+
+Performs association mapping in multiparent mouse populations.
 }
 

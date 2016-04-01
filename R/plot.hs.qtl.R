@@ -1,4 +1,5 @@
 #' @title Convert function to average fixed regions and return LOD for QTL hierarchical clustering
+#' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @export
 
 plot.hs.qtl = function(qtl, bin.width = 10000, ...) {

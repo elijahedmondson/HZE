@@ -1,5 +1,6 @@
 #' @title Association mapping on the X chromosome with binary variable outcomes, optimized for speed by
 #' pre-formating sanger snps to sdp files.
+#' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #'
 #' Performs association mapping in multiparent mouse populations.
 #' @export

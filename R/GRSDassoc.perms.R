@@ -1,5 +1,5 @@
 #' @title Permutation analysis for HZE.
-#' @author Elijah F. Edmondson <elijah.edmondson@gmail.com>
+#' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @export
 
 GRSDassoc.perms = function(perms, chr = 1:19, Xchr = FALSE,

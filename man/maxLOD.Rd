@@ -24,6 +24,6 @@ three_prime_UTR", "pseudogenic_mRNA", "pseudogenic_start_codon",
 Jan. 2, 2016
 }
 \author{
-Elijah F. Edmondson <elijah.edmondson@gmail.com>
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
 }
 

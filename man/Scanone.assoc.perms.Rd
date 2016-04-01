@@ -9,6 +9,6 @@ Scanone.assoc.perms(perms, pheno = pheno, pheno.col = "AML",
   sdp.file = sdp.file, ncl = 4)
 }
 \author{
-Elijah F. Edmondson <elijah.edmondson@gmail.com>
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
 }
 

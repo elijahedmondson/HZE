@@ -1,5 +1,5 @@
 #' @title MGI features of HZE QTL Support Intervals.
-#' @author Elijah F. Edmondson <elijah.edmondson@gmail.com>
+#' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @details Jan. 2, 2016
 #' @param file: the location of your file
 #' @param chr: the chromosome to evaluate

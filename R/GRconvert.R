@@ -1,4 +1,5 @@
 #' @title Convert a Large list of data.frames into a GRangesList
+#' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @export
 
 GRconvert = function(file) {

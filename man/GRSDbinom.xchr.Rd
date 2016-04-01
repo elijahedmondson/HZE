@@ -2,10 +2,13 @@
 % Please edit documentation in R/GRSDbinom.xchr.R
 \name{GRSDbinom.xchr}
 \alias{GRSDbinom.xchr}
-\title{Association mapping on the X chromosome with binary variable outcomes.
-
-Performs association mapping in multiparent mouse populations.}
+\title{Association mapping on the X chromosome with binary variable outcomes.}
 \usage{
 GRSDbinom.xchr(obj, pheno, pheno.col, addcovar, tx)
+}
+\author{
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
+
+Performs association mapping in multiparent mouse populations.
 }
 

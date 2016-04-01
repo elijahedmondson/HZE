@@ -1,4 +1,5 @@
 #' @title Association mapping on the X chromosome with poisson dist.
+#' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #'
 #' Performs association mapping in multiparent mouse populations.
 #' @export

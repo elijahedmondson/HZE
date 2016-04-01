@@ -1,5 +1,5 @@
 #' @title Genome wide association mapping using CoxPH
-#' @author Elijah F. Edmondson <elijah.edmondson@gmail.com>
+#' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @details Dec. 29, 2015
 #' @param pheno: data.frame containing phenotypes in columns and samples in
 #'                   rows. Rownames must contain sample IDs.

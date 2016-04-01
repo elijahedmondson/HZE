@@ -2,10 +2,12 @@
 % Please edit documentation in R/GRSDbinom.R
 \name{GRSDbinom}
 \alias{GRSDbinom}
-\title{Association mapping on autosomal chromosomes with binary variable outcomes.
-
-Performs association mapping in multiparent mouse populations.}
+\title{Association mapping on autosomal chromosomes with binary variable outcomes.}
 \usage{
 GRSDbinom(obj, pheno, pheno.col, addcovar, tx)
+}
+\author{
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
+Performs association mapping in multiparent mouse populations.
 }
 

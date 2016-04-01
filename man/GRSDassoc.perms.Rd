@@ -9,6 +9,6 @@ GRSDassoc.perms(perms, chr = 1:19, Xchr = FALSE, pheno, pheno.col, probs, K,
   tx = "", sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/")
 }
 \author{
-Elijah F. Edmondson <elijah.edmondson@gmail.com>
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
 }
 

@@ -7,6 +7,10 @@
 GRSDcoxph(obj, pheno, surv, addcovar, tx)
 }
 \description{
+Association mapping with survival outcomes using the CoxPH model.
+}
+\author{
+Elijah F Edmondson, \email{elijah.edmondson@gmail.com}
 Performs association mapping in multiparent mouse populations.
 }
 
