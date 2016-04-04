@@ -4,76 +4,18 @@
 #' Performs association mapping in multiparent mouse populations.
 #' @export
 
-GRSDcoxph.xchr = function(obj, pheno, surv, addcovar, tx) {
+GRSDcoxph.xchr = function(obj, pheno, pheno.col, surv, addcovar, tx, sanger.dir) {
 
         chr = obj$markers[1,2]
 
-
-        # Get the Sanger SNPs.
-        ###DMG
-        ### You're working with the HS, so just get HS colors.
-        #  strains = sub("/", "_", do.colors[,2])
-        #  if(cross == "HS") {
         strains = sub("/", "_", hs.colors[,2])
-        #  } # if(cross = "HS")
 
-        # Read the Sanger VCF file.
-        hdr = scanVcfHeader(snp.file)
-        gr = GRanges(seqnames = chr, range = IRanges(start = 0,
-                                                     end = 200e6))
-        param = ScanVcfParam(geno = c("GT", "FI"), fixed = "ALT",
-                             samples = strains[strains != "C57BL_6J"], which = gr)
-        sanger = readVcf(file = snp.file, genome = "mm10", param = param)
+        file.prefix = paste(tx, pheno.col, sep = "_")
 
-        # Keep high quality SNPs (quality == 1)
-        sanger = sanger[rowSums(geno(sanger)$FI, na.rm = TRUE) == 7]
+        plot.title = paste(tx, pheno.col, sep = " ")
 
-        # Keep polymorphic SNPs.
-        keep = which(rowSums(geno(sanger)$GT == "0/0", na.rm = TRUE) < 7)
-        sanger = sanger[keep]
-        rm(keep)
+        load(file = paste0(sanger.dir, "X.Rdata"))
 
-        # We have to do some work to extract the alternate allele.
-        alt = CharacterList(fixed(sanger)$ALT)
-        alt = unstrsplit(alt, sep = ",")
-
-        # Extract the SNP positions and genotypes.
-        ###DMG
-        ### Changed 'rowData()' to 'rowRanges()' because rowData was deprecated.
-        sanger.hdr = data.frame(ID = names(rowRanges(sanger)), CHR = as.character(seqnames(sanger)),
-                                POS = start(sanger), REF = as.character(fixed(sanger)$REF),
-                                ALT = alt, stringsAsFactors = FALSE)
-        rm(alt)
-
-        ###DMG
-        ### Again, you have HS mice. Just use the HS data. You can delete the DO lines.
-        # Add C57BL/6J to the Sanger SNPs.
-        #  if(cross == "DO") {
-        #    sanger = cbind("A_J" = geno(sanger)$GT[,1,drop = FALSE],
-        #             "C57BL_6J" = "0/0",
-        #             geno(sanger)$GT[,2:7,drop = FALSE])
-        #  } else if(cross == "HS") {
-        sanger = cbind(geno(sanger)$GT[,1:4,drop = FALSE],
-                       "C57BL_6J" = "0/0",
-                       geno(sanger)$GT[,5:7,drop = FALSE])
-        #  } # else
-
-        # Convert allele calls to numeric values.
-        sanger = (sanger != "0/0") * 1
-
-        # Make the MAF between 1/8 and 4/8.
-        flip = which(rowSums(sanger) > 4)
-        sanger[flip,] = 1 - sanger[flip,,drop = FALSE]
-        rm(flip)
-
-        ###DMG
-        ### I'm moving this outside of the function.
-        # Create the survival object.
-        #  surv = Surv(pheno$days, pheno$cataract)
-
-        # Null model.
-        ###DMG
-        ### Put the null logistic regression or linear model here.
         null.mod = coxph(surv ~ addcovar)
         null.ll = logLik(null.mod)
         pv = rep(0, nrow(sanger))

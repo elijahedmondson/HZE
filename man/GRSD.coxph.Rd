@@ -4,8 +4,9 @@
 \alias{GRSD.coxph}
 \title{Genome wide association mapping using CoxPH}
 \usage{
-GRSD.coxph(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
-  outdir = "~/Desktop/files/", tx = c("Gamma", "HZE", "Unirradiated"))
+GRSD.coxph(pheno, pheno.col, days.col, probs, K, addcovar, markers, snp.file,
+  outdir = "~/Desktop/files/", tx = c("Gamma", "HZE", "Unirradiated",
+  "All"), sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/")
 }
 \arguments{
 \item{pheno:}{data.frame containing phenotypes in columns and samples in

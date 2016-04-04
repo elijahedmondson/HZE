@@ -20,7 +20,8 @@
 
 
 GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
-                      outdir = "~/Desktop/", tx = c("Gamma", "HZE", "Unirradiated")){
+                      outdir = "~/Desktop/", tx = c("Gamma", "HZE", "Unirradiated", "All"),
+                      sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/"){
         begin <- Sys.time()
         begin
         # COVARIATES #
@@ -77,17 +78,18 @@ GRSD.assoc = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
         result = vector("list", length(data))
         names(result) = names(data)
         print(paste("Mapping with", length(samples), tx, "samples..."))
+        sanger.dir = sanger.dir
 
         for(i in 1:19) {
                 print(paste("CHROMOSOME", i))
                 timechr <- Sys.time()
-                result[[i]] = GRSDbinom.fast(data[[i]], pheno, pheno.col, addcovar, tx)
+                result[[i]] = GRSDbinom.fast(data[[i]], pheno, pheno.col, addcovar, tx, sanger.dir)
                 print(paste(round(difftime(Sys.time(), timechr, units = 'mins'), digits = 2),
                       "minutes..."))
         } #for(i)
 
         print("X CHROMOSOME")
-        result[["X"]] = GRSDbinom.xchr.fast(data[["X"]], pheno, pheno.col, addcovar, tx)
+        result[["X"]] = GRSDbinom.xchr.fast(data[["X"]], pheno, pheno.col, addcovar, tx, sanger.dir)
 
         print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
                     "hours elapsed during mapping."))

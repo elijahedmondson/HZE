@@ -5,7 +5,8 @@
 \title{Genome wide association mapping for binary phenotypes.}
 \usage{
 GRSD.assoc(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
-  outdir = "~/Desktop/", tx = c("Gamma", "HZE", "Unirradiated"))
+  outdir = "~/Desktop/", tx = c("Gamma", "HZE", "Unirradiated", "All"),
+  sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/")
 }
 \arguments{
 \item{pheno:}{data.frame containing phenotypes in columns and samples in

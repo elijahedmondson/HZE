@@ -4,7 +4,7 @@
 \alias{GRSDcoxph.xchr}
 \title{Association mapping with survival outcomes using the CoxPH model.}
 \usage{
-GRSDcoxph.xchr(obj, pheno, surv, addcovar, tx)
+GRSDcoxph.xchr(obj, pheno, pheno.col, surv, addcovar, tx, sanger.dir)
 }
 \description{
 Association mapping with survival outcomes using the CoxPH model.

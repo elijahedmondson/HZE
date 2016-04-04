@@ -19,8 +19,9 @@
 #' @export
 
 
-GRSD.coxph = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
-                      outdir = "~/Desktop/files/", tx = c("Gamma", "HZE", "Unirradiated")){
+GRSD.coxph = function(pheno, pheno.col, days.col, probs, K, addcovar, markers, snp.file,
+                      outdir = "~/Desktop/files/", tx = c("Gamma", "HZE", "Unirradiated", "All"),
+                      sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/"){
         begin <- Sys.time()
         begin
         # COVARIATES #
@@ -36,12 +37,11 @@ GRSD.coxph = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
         probs = probs[samples,,,drop = FALSE]
 
         file.prefix = paste(tx, pheno.col, sep = "_")
-        print(file.prefix)
         plot.title = paste(tx, pheno.col, sep = " ")
         print(plot.title)
 
         # COX PH MODEL #
-        surv = Surv(pheno$days, pheno[,pheno.col])
+        surv = Surv(pheno[,days.col], pheno[,pheno.col])
         fit = survfit(surv ~ addcovar)
         plot(fit, col = 1:2, las = 1, main = plot.title)
         legend("bottomleft", col = 1:2, lty = 1, legend = c("female", "male"))
@@ -78,16 +78,21 @@ GRSD.coxph = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
         names(result) = names(data)
         print(paste("Mapping with", length(samples), tx, "samples..."))
 
+        sanger.dir = sanger.dir
+
         for(i in 1:19) {
                 print(paste("CHROMOSOME", i))
-                result[[i]] = GRSDcoxph(data[[i]], pheno, surv, addcovar, tx)
+                timechr <- Sys.time()
+                result[[i]] = GRSDcoxph(data[[i]], pheno, pheno.col, surv, addcovar, tx, sanger.dir)
+                print(paste(round(difftime(Sys.time(), timechr, units = 'mins'), digits = 2),
+                            "minutes..."))
         } #for(i)
 
         print("X CHROMOSOME")
-        result[["X"]] = GRSDcoxph.xchr(data[["X"]], pheno, surv, addcovar, tx)
+        result[["X"]] = GRSDcoxph.xchr(data[["X"]], pheno, pheno.col, surv, addcovar, tx, sanger.dir)
 
-        print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
-                    "hours elapsed during mapping."))
+        print(paste(round(difftime(Sys.time(), begin, units = 'mins'), digits = 1),
+                    "minutes elapsed during mapping."))
 
 
         # PLOTTING
@@ -152,7 +157,7 @@ GRSD.coxph = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
 
         save(qtl, file.prefix, file = paste0(file.prefix, "_QTL.Rdata"))
 
-        print(paste(round(difftime(Sys.time(), plotter, units = 'hours'), digits = 2),
-                    "hours elapsed during plotting."))
+        print(paste(round(difftime(Sys.time(), plotter, units = 'mins'), digits = 1),
+                    "minutes elapsed during plotting."))
 
 }
