@@ -1,7 +1,7 @@
 Package: HZE
 Type: Package
 Title: Mapping suscetibility loci in HZE irradiated HS/npt mice
-Version: 0.1
+Version: 2.1
 Date: 2015-12-28
 Authors@R: person("Elijah", "Edmondson", email = "elijah.edmondson@gmail.com", role = c("aut", "cre"))
 Description: Mapping loci associated with susceptibility to post-irradiation tumors. Association mapping using Sanger SNPs imputed onto HS genomes using haplotype contributions with DOQTL. Kinship is scaled and used as in QTLRel.

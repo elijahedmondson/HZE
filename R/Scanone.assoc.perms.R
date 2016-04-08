@@ -2,10 +2,10 @@
 #' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @export
 
-Scanone.assoc.perms = function(perms, pheno = pheno, pheno.col = "AML", probs = model.probs, K = K,
+Scanone.assoc.perms = function(perms, pheno = pheno, pheno.col, probs = model.probs, K = K, tx,
                                addcovar = addcovar, markers = MM_snps, sdp.file = sdp.file, ncl = 4) {
         begin <- Sys.time()
-        print(paste(pheno.col, "Permutation Analysis:", Sys.time(), sep = " "))
+        print(paste(tx, pheno.col, "Permutation Analysis:", Sys.time(), sep = " "))
         females = which(pheno$sex == "0")
         males = which(pheno$sex == "1")
         sdp.file = sdp.file
@@ -63,7 +63,6 @@ Scanone.assoc.perms = function(perms, pheno = pheno, pheno.col = "AML", probs = 
         print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
                     "hours elapsed during analysis"))
 
-        save(permutations, file.prefix, file = paste0(file.prefix, "_perms.Rdata"))
         return(permutations)
 
 
