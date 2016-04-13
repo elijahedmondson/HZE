@@ -2,7 +2,7 @@
 #' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @export
 
-Scanone.assoc.perms = function(perms, pheno = pheno, pheno.col, probs = model.probs, K = K, tx,
+Scanone.assoc.perms = function(perms, pheno = pheno, pheno.col, probs, K = K, tx = "",
                                addcovar = addcovar, markers = MM_snps, sdp.file = sdp.file, ncl = 4) {
         begin <- Sys.time()
         print(paste(tx, pheno.col, "Permutation Analysis:", Sys.time(), sep = " "))
@@ -29,7 +29,7 @@ Scanone.assoc.perms = function(perms, pheno = pheno, pheno.col, probs = model.pr
 
                 min.a.pv = 1
 
-                qtl = scanone.assoc(pheno = phenoperm, pheno.col = 2, probs = model.probs, K = K, addcovar,
+                qtl = scanone.assoc(pheno = phenoperm, pheno.col = 2, probs, K = K, addcovar,
                                     markers = MM_snps, sdp.file = sdp.file, ncl = 4)
 
                 min.a.pv = min(min.a.pv, min(qtl$`1`@elementMetadata$p.value),
