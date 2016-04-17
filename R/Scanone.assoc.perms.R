@@ -2,7 +2,7 @@
 #' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @export
 
-Scanone.assoc.perms = function(perms, pheno = pheno, pheno.col, probs, K = K, tx = "",
+Scanone.assoc.perms = function(perms, pheno, pheno.col, probs, K = K, tx = "",
                                addcovar = addcovar, markers = MM_snps, sdp.file = sdp.file, ncl = 4) {
         begin <- Sys.time()
         print(paste(tx, pheno.col, "Permutation Analysis:", Sys.time(), sep = " "))

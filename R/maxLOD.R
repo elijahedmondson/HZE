@@ -1,4 +1,4 @@
-#' @title MGI features of HZE QTL Support Intervals.
+#' @title Helper Function for QTL Support Intervals.
 #' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @details Jan. 2, 2016
 #' @param file: the location of your file
@@ -13,8 +13,7 @@
 #' @export
 
 maxLOD = function(file, chr, type = "gene", LODcutoff = 6) {
-        library(DOQTL)
-        print("Loading file...")
+
         load(file)
         top <- max(-log10(result[[chr]]$pv))
         print(paste0("Maximum LOD score on Chr ", chr, " is ", top, ","))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/maxLOD.R
 \name{maxLOD}
 \alias{maxLOD}
-\title{MGI features of HZE QTL Support Intervals.}
+\title{Helper Function for QTL Support Intervals.}
 \usage{
 maxLOD(file, chr, type = "gene", LODcutoff = 6)
 }
