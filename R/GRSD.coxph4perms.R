@@ -4,7 +4,7 @@
 #' Performs association mapping in multiparent mouse populations.
 #' @export
 
-GRSD.coxph4perms = function(obj, pheno, pheno.col, surv, addcovar, tx, sanger.dir) {
+GRSD.coxph4perms = function(obj, pheno, pheno.col, days.col, addcovar, tx, sanger.dir) {
         chr = obj$markers[1,2]
 
         setwd(outdir)
@@ -16,6 +16,9 @@ GRSD.coxph4perms = function(obj, pheno, pheno.col, surv, addcovar, tx, sanger.di
         strains = sub("/", "_", hs.colors[,2])
 
         load(file = paste0(sanger.dir, chr, ".Rdata"))
+
+        surv = Surv(pheno[,days.col], pheno[,pheno.col])
+        fit = survfit(surv ~ addcovar)
 
         null.mod = coxph(surv ~ addcovar)
         null.ll = logLik(null.mod)

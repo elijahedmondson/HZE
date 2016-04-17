@@ -28,11 +28,7 @@ GRSDcoxph.perms = function(perms, chr = 1:19, Xchr = FALSE,
         # COX PH MODEL #
         surv = Surv(pheno[,days.col], pheno[,pheno.col])
         fit = survfit(surv ~ addcovar)
-        plot(fit, col = 1:2, las = 1, main = plot.title)
-        legend("bottomleft", col = 1:2, lty = 1, legend = c("female", "male"))
-        mod = coxph(surv ~ addcovar)
-        text(x = 25, y = 0.15, labels = paste("p =", format(anova(mod)[2,4],
-                                                            digits = 2)), adj = 0)
+
 
         for(i in 1:length(K)) {
                 K[[i]] = K[[i]][samples, samples]
@@ -68,16 +64,17 @@ GRSDcoxph.perms = function(perms, chr = 1:19, Xchr = FALSE,
                 new.order = rep(0, length(surv))
                 new.order[females] = sample(females)
                 new.order[males] = sample(males)
+                log.perm = pheno[,pheno.col][new.order]
 
-                log.perm = surv[new.order]
-                surv = log.perm
 
-                phenonew = data.frame(cbind("sex" = pheno$sex, surv))
+                pheno["new.col"] <- log.perm
+
+                #surv = Surv(pheno[,days.col], pheno[,new.col])
 
                 min.a.pv = 1
 
                 for(i in 1:length(chr)) {
-                        result = GRSD.coxph4perms(data[[i]], pheno = phenonew, pheno.col, surv, addcovar, tx, sanger.dir)
+                        result = GRSD.coxph4perms(data[[i]], pheno = pheno, pheno.col = "new.col", days.col = days.col, addcovar, tx, sanger.dir)
                         min.a.pv = min(min.a.pv, min(result$pv))
                 } #for(i)
 
@@ -85,7 +82,7 @@ GRSDcoxph.perms = function(perms, chr = 1:19, Xchr = FALSE,
                 min.x.pv = 1
 
                 if(Xchr) {
-                        result = GRSDcoxph.xchr4perms(data[["X"]], pheno = phenonew, pheno.col, surv, days.col, addcovar, tx, sanger.dir)
+                        result = GRSDcoxph.xchr4perms(data[["X"]], pheno = pheno, pheno.col = "new.col", days.col, addcovar, tx, sanger.dir)
                         min.x.pv = min(result$pv)
                 }
 

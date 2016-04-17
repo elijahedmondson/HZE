@@ -58,19 +58,20 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = FALSE,
         for(p in 1:perms) {
                 LODtime = Sys.time()
                 print(p)
+
+
                 new.order = rep(0, length(trait))
                 new.order[females] = sample(females)
                 new.order[males] = sample(males)
 
                 log.perm = trait[new.order]
-                trait = log.perm
+                pheno["new.col"] <- log.perm
 
-                phenonew = data.frame(cbind("sex" = pheno$sex, trait))
 
                 min.a.pv = 1
 
                 for(i in 1:length(chr)) {
-                        result = GRSDbinom.permsfast(data[[i]], pheno = phenonew, pheno.col = "trait", addcovar, tx, sanger.dir)
+                        result = GRSDbinom.permsfast(data[[i]], pheno = pheno, pheno.col = "new.col", addcovar, tx, sanger.dir)
                         min.a.pv = min(min.a.pv, min(result$pv))
                 } #for(i)
 
@@ -78,7 +79,7 @@ GRSDassoc.perms = function(perms, chr = 1:19, Xchr = FALSE,
                 min.x.pv = 1
 
                 if(Xchr) {
-                        result = GRSDbinom.xchr.permsfast(data[["X"]], pheno = phenonew, pheno.col = "trait", addcovar, tx, sanger.dir)
+                        result = GRSDbinom.xchr.permsfast(data[["X"]], pheno = phenonew, pheno.col = "new.col", addcovar, tx, sanger.dir)
                         min.x.pv = min(result$pv)
                 }
 

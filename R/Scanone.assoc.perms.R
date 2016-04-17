@@ -18,18 +18,12 @@ Scanone.assoc.perms = function(perms, pheno, pheno.col, probs, K = K, tx = "",
                 new.order = rep(0, length(pheno[,pheno.col]))
                 new.order[females] = sample(females)
                 new.order[males] = sample(males)
-
-                X.frame = rep("X", length(new.order))
-
-                row.names = data.frame(X.frame, new.order)
-                row.names = apply(row.names, 1, paste, collapse="")
-
-                phenoperm = data.frame(row.names = row.names, sex = as.numeric(pheno$sex == "1"),
-                                       "2" = as.numeric(pheno[,pheno.col]))
+                lin.perm = pheno[,pheno.col][new.order]
+                pheno["new.col"] <- lin.perm
 
                 min.a.pv = 1
 
-                qtl = scanone.assoc(pheno = phenoperm, pheno.col = 2, probs, K = K, addcovar,
+                qtl = scanone.assoc(pheno = pheno, pheno.col = "new.col", probs, K = K, addcovar,
                                     markers = MM_snps, sdp.file = sdp.file, ncl = 4)
 
                 min.a.pv = min(min.a.pv, min(qtl$`1`@elementMetadata$p.value),

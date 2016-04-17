@@ -67,7 +67,7 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                         
                         #phenoperm = data.frame(phenoperm[,1], check.names = FALSE, check.rows = FALSE, row.names = phenoperm$rownames)
                         phenoperm = data_frame(row.names = paste0("X",phenoperm$rownames), sex = phenoperm$sex, pheno.col = phenoperm[,pheno.col])
-                        phenoperm = data.frame(phenoperm, row.names = phenoperm$rownames, check.names = FALSE, check.rows = FALSE)
+                        #phenoperm = data.frame(phenoperm, row.names = phenoperm$row.names, check.names = FALSE, check.rows = FALSE)
                         
                         #phenoperm = pheno[sample(nrow(pheno), replace = TRUE), ]
                         
