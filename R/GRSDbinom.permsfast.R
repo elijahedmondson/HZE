@@ -38,7 +38,6 @@ GRSDbinom.permsfast = function(obj, pheno, pheno.col, addcovar, tx, sanger.dir =
                 # Check for low allele frequencies and remove SDPs with too
                 # few samples carrying one allele.
                 sdps.to.use = which(rowSums(cur.alleles) > 1.0)
-
                 # Run the model at each unique SDP.
                 for(j in sdps.to.use) {
 

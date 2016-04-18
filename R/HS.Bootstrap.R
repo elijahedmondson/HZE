@@ -16,6 +16,9 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                  tx = "", sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/")
 {
                 begin <- Sys.time()
+                file.prefix = paste(tx, pheno.col, sep = "_")
+                plot.title = paste(tx, pheno.col, sep = " ")
+                print(paste(plot.title, "Bootstrap Analysis:", Sys.time()))
 
                 samples = intersect(rownames(pheno), rownames(probs))
                 samples = intersect(samples, rownames(addcovar))
@@ -26,10 +29,6 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                 addcovar = addcovar[samples,,drop = FALSE]
                 probs = probs[samples,,,drop = FALSE]
 
-                file.prefix = paste(tx, pheno.col, sep = "_")
-
-                plot.title = paste(tx, pheno.col, sep = " ")
-                print(paste(plot.title, "Bootstrap Analysis:", Sys.time()))
 
 
                 # LOGISTIC REGRESSION MODEL #
@@ -37,16 +36,16 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                         K[[i]] = K[[i]][samples, samples]
                 } # for(i)
 
-                chrs = c(1:19, "X")
-                data = vector("list", length(chrs))
+                chrs = c(chr)
+                data = vector("list", length(chr))
                 names(data) = chrs
-                for(i in 1:length(chrs)) {
 
-                        rng = which(markers[,2] == chrs[i])
-                        data[[i]] = list(probs = probs[,,rng], K = K[[i]],
+                rng = which(markers[,2] == chrs[chr])
+                data[[chr]] = list(probs = probs[,,rng], K = K[[chr]],
                                          markers = markers[rng,])
 
-                } # for(i)
+
+                #probs = pheno[sample(nrow(probs), replace = TRUE), ]
 
                 rm(probs, K, markers)
 
@@ -62,15 +61,15 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                 for(p in 1:perms) {
                         LODtime = Sys.time()
                         print(p)
-                        
+
                         phenoperm = pheno[sample(nrow(pheno), replace = TRUE), ]
-                        
                         #phenoperm = data.frame(phenoperm[,1], check.names = FALSE, check.rows = FALSE, row.names = phenoperm$rownames)
-                        phenoperm = data_frame(row.names = paste0("X",phenoperm$rownames), sex = phenoperm$sex, pheno.col = phenoperm[,pheno.col])
-                        #phenoperm = data.frame(phenoperm, row.names = phenoperm$row.names, check.names = FALSE, check.rows = FALSE)
-                        
+                        #phenoperm = data_frame(row.names = paste0("X",phenoperm$rownames), sex = phenoperm$sex, pheno.col = phenoperm[,pheno.col])
+                        #phenoperm = data.frame(pheno[sample(nrow(pheno), replace = TRUE), ], row.names = pheno$rownames, check.names = FALSE, check.rows = FALSE)
+
+                        rownames(phenoperm) = phenoperm$rownames
                         #phenoperm = pheno[sample(nrow(pheno), replace = TRUE), ]
-                        
+
                         result = GRSDbinom.permsfast(data[[chr]], pheno = phenoperm, pheno.col = "pheno.col", addcovar, tx, sanger.dir)
 
                         top <- max(-log10(result$pv))
@@ -79,7 +78,7 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                         print(paste0("Maximum LOD score on Chr ", chr, " is ", top, ","))
                         print(paste("located between", max(MAX.LOD), "and ", min(MAX.LOD), "bp."))
 
-                        if(chr == "X") {
+                        #if(chr == "X") {
                                 result = GRSDbinom.xchr.permsfast(data[["X"]], pheno = phenonew, pheno.col, addcovar, tx, sanger.dir)
                                 min.x.pv = min(result$pv)
                         }
