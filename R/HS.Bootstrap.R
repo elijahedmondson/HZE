@@ -45,7 +45,7 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                                          markers = markers[rng,])
 
 
-                #probs = pheno[sample(nrow(probs), replace = TRUE), ]
+                data = pheno[data(nrow(data), replace = TRUE), ]
 
                 rm(probs, K, markers)
 
@@ -55,6 +55,8 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                 result = vector("list", length(data))
                 names(result) = names(data)
 
+                result = GRSDbinom.permsfast(data[[chr]], pheno = pheno, pheno.col = "Thyroid", addcovar, tx, sanger.dir)
+
 
                 permutations = matrix(1, nrow = perms, ncol = 2, dimnames = list(1:perms, c("min", "max")))
                 sanger.dir = sanger.dir
@@ -62,13 +64,13 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                         LODtime = Sys.time()
                         print(p)
 
-                        phenoperm = pheno[sample(nrow(pheno), replace = TRUE), ]
-                        #phenoperm = data.frame(phenoperm[,1], check.names = FALSE, check.rows = FALSE, row.names = phenoperm$rownames)
-                        #phenoperm = data_frame(row.names = paste0("X",phenoperm$rownames), sex = phenoperm$sex, pheno.col = phenoperm[,pheno.col])
-                        #phenoperm = data.frame(pheno[sample(nrow(pheno), replace = TRUE), ], row.names = pheno$rownames, check.names = FALSE, check.rows = FALSE)
+                        phenoperm = data.frame(pheno[sample(nrow(pheno), replace = TRUE), ], row.names = pheno$rownames, check.names = FALSE, check.rows = FALSE)
 
-                        rownames(phenoperm) = phenoperm$rownames
-                        #phenoperm = pheno[sample(nrow(pheno), replace = TRUE), ]
+                        # FROM DG #
+                        samples = sub("\\.[0-9]$", "", rownames(phenoperm))
+                        probsperm = probs[samples,,]
+                        rownames(probsperm) = make.unique(rownames(probsperm))
+
 
                         result = GRSDbinom.permsfast(data[[chr]], pheno = phenoperm, pheno.col = "pheno.col", addcovar, tx, sanger.dir)
 
