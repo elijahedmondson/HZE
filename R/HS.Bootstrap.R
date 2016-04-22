@@ -29,18 +29,18 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                 addcovar = addcovar[samples,,drop = FALSE]
                 probs = probs[samples,,,drop = FALSE]
 
-                for(i in 1:length(K)) {
-                        K[[i]] = K[[i]][samples,samples,drop = FALSE]
-                }
+                samples2 = markers$SNP_ID[which(markers$Chr == chr)]
+                probs = probs[,,samples2, drop = FALSE]
 
+                K = K[[chr]][samples,samples,drop = FALSE]
 
                 setwd(outdir)
 
                 ##
 
-                permutations = matrix(1, nrow = perms, ncol = 2, dimnames = list(1:perms, c("min", "max")))
+                permutations = matrix(1, nrow = perms, ncol = 5, dimnames = list(1:perms, c("LOD", "min", "max", "average", "#Markers")))
                 sanger.dir = sanger.dir
-
+                rm(samples, samples2)
                 for(p in 1:perms) {
                         LODtime = Sys.time()
                         print(p)
@@ -54,41 +54,42 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                         probsperm = probs[samples,,]
                         rownames(probsperm) = make.unique(rownames(probsperm))
 
+                        #Kperm = K
+                        #for(i in 1:length(K)) {
+                        #        Kperm[[i]] = Kperm[[i]][samples,samples,drop = FALSE]
+                        #}
+                        #for(i in 1:length(K)) {
+                        #        rownames(Kperm[[i]]) = make.unique(rownames(Kperm[[i]]))
+                        #}
+
                         Kperm = K
-                        for(i in 1:length(K)) {
-                                Kperm[[i]] = Kperm[[i]][samples,samples,drop = FALSE]
-                        }
+                        Kperm = K[samples,samples,drop = FALSE]
+                        rownames(Kperm) = make.unique(rownames(Kperm))
 
-
-                        for(i in 1:length(K)) {
-                                rownames(Kperm[[i]]) = make.unique(rownames(Kperm[[i]]))
-                        }
 
                         ### Move the model into the loop LOGISTIC REGRESSION MODEL ###
-                        for(i in 1:length(Kperm)) {
-                                Kperm[[i]] = Kperm[[i]][samples, samples]
-                        } # for(i)
-
-                        chrs = c(1:19, "X")
+                        #for(i in 1:length(Kperm)) {
+                        #        Kperm[[i]] = Kperm[[i]][samples, samples]
+                        #} # for(i)
+                        Kperm = Kperm[samples, samples]
+                        chrs = chr
                         data = vector("list", length(chrs))
                         names(data) = chrs
-                        for(i in 1:length(chrs)) {
 
-                                rng = which(markers[,2] == chrs[i])
-                                data[[i]] = list(probsperm = probsperm[,,rng], Kperm = Kperm[[i]],
+                        rng = which(markers[,2] == chrs)
+                        data = list(probsperm = probsperm, Kperm = Kperm,
                                                  markers = markers[rng,])
 
-                        } # for(i)
                         result = vector("list", length(data))
                         names(result) = names(data)
                         rm(probsperm, Kperm)
                         ### WORK HORSE ###
 
-                        result = GRSDbinom.permsfast(data[[chr]], pheno = phenoperm,
+                        result = GRSDbinom.permsfast(data, pheno = phenoperm,
                                                      pheno.col, addcovar, tx, sanger.dir)
 
-                        top <- max(-log10(result$pv))
-                        MAX.LOD = result$POS[which(-log10(result$pv) >= top)]
+                        top = max(-log10(result$pv))
+                        MAX.LOD = result$POS[which(-log10(result$pv) == top)]
 
                         print(paste0("Maximum LOD score on Chr ", chr, " is ", top))
                         print(paste("located between", min(MAX.LOD), "and ", max(MAX.LOD), "bp."))
@@ -99,7 +100,7 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                         #}
 
                         # Save the locus.
-                        permutations[p,] = c(min(MAX.LOD), max(MAX.LOD))
+                        permutations[p,] = c(top, min(MAX.LOD), max(MAX.LOD), ((min(MAX.LOD) + max(MAX.LOD))/2), length(MAX.LOD))
                         print(paste(round(difftime(Sys.time(), LODtime, units = 'mins'), digits = 2),
                                     "minutes..."))
 
@@ -109,10 +110,7 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                             "hours elapsed during analysis"))
 
                 return(permutations)
-                QUANTILE = quantile(permutations,c(0.025,0.975))
-                print("95% Confidence Interval for QTL:")
-                print(paste(QUANTILE))
-                return(QUANTILE)
+
 
 }
 
