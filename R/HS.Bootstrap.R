@@ -12,7 +12,7 @@
 
 
 HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
-                 markers, snp.file, outdir = "~/Desktop/",
+                 markers, snp.file, outdir = "~/Desktop/", peakMB = NULL,
                  tx = "", sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/")
 {
                 begin <- Sys.time()
@@ -29,6 +29,7 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                 addcovar = addcovar[samples,,drop = FALSE]
                 probs = probs[samples,,,drop = FALSE]
 
+                #samples2 = markers$SNP_ID[which(markers$Chr == chr & markers$Mb_NCBI38 > (peakMB - 10000000) & markers$Mb_NCBI38 < (peakMB + 10000000))]
                 samples2 = markers$SNP_ID[which(markers$Chr == chr)]
                 probs = probs[,,samples2, drop = FALSE]
 
@@ -54,13 +55,6 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                         probsperm = probs[samples,,]
                         rownames(probsperm) = make.unique(rownames(probsperm))
 
-                        #Kperm = K
-                        #for(i in 1:length(K)) {
-                        #        Kperm[[i]] = Kperm[[i]][samples,samples,drop = FALSE]
-                        #}
-                        #for(i in 1:length(K)) {
-                        #        rownames(Kperm[[i]]) = make.unique(rownames(Kperm[[i]]))
-                        #}
 
                         Kperm = K
                         Kperm = K[samples,samples,drop = FALSE]
@@ -68,9 +62,7 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
 
 
                         ### Move the model into the loop LOGISTIC REGRESSION MODEL ###
-                        #for(i in 1:length(Kperm)) {
-                        #        Kperm[[i]] = Kperm[[i]][samples, samples]
-                        #} # for(i)
+
                         Kperm = Kperm[samples, samples]
                         chrs = chr
                         data = vector("list", length(chrs))

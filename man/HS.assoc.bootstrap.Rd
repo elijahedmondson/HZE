@@ -10,7 +10,7 @@ interval for the location of the QTL is obtained as the interval containing 95%
 of the estimated locations from the bootstrap replicates. Visscher et al. (1996)}
 \usage{
 HS.assoc.bootstrap(perms, chr, pheno, pheno.col, probs, K, addcovar, markers,
-  snp.file, outdir = "~/Desktop/", tx = "",
+  snp.file, outdir = "~/Desktop/", peakMB = NULL, tx = "",
   sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/")
 }
 \description{
