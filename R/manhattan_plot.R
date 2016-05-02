@@ -35,8 +35,8 @@ manhattan_plot = function (pval, bp, chr, groups = NULL, cutoff = NULL, xlab = "
         nCHR <- lu(dat$CHR)
         adj <- rep(c(0, maxes.cumsum[-nCHR]), times = reptimes)
         dat$relBP <- dat$BP + adj
-        cols <- c("#1F78B4", "#1F78B4", "#1F78B4", "#1F78B4", "#33A02C",
-                  "#33A02C", "#33A02C", "#33A02C", "#33A02C", "#DB2B3D")
+        cols <- c("#8c53c6", "#8c53c6", "#8c53c6", "#8c53c6", "#419fde",
+                  "#419fde", "#419fde", "#419fde", "#419fde", "#e66c79")
         cols <- cols[c(1, 2, 7, 8, 9, 10, 3, 4, 5, 6, 11, 12)]
         if (is.null(groups)) {
                 cols <- c("grey50", "grey15")
