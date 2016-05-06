@@ -2,18 +2,13 @@
 % Please edit documentation in R/plot.hs.color.R
 \name{plot.hs.color.qtl}
 \alias{plot.hs.color.qtl}
-\title{Manhattan plots with colors}
+\title{Genome wide association plots with separate colors
+
+param bin.width = size of loop, in which maximum LOD value for a set of bin of SNPs is recorded
+param Red == HZE, Blue == Gamma, Purple == All Irradiated, Green == Unirradiated, Black == All mice
+
+author Elijah F Edmondson, elijah.edmondson@gmail.com}
 \usage{
 \method{plot}{hs.color.qtl}(qtl, bin.width = 1000, color = "black", ...)
-}
-\description{
-bin.width = size of loop, in which maximum LOD value for a set of bin of SNPs is recorded
-}
-\details{
-Red == HZE
-Blue == Gamma
-Purple == All Irradiated
-Green == Unirradiated
-Black == All mice
 }
 

@@ -1,13 +1,9 @@
-#' Manhattan plots with colors
+#' @title Genome wide association plots with separate colors
 #'
-#'bin.width = size of loop, in which maximum LOD value for a set of bin of SNPs is recorded
+#' param bin.width = size of loop, in which maximum LOD value for a set of bin of SNPs is recorded
+#' param Red == HZE, Blue == Gamma, Purple == All Irradiated, Green == Unirradiated, Black == All mice
 #'
-#'Red == HZE
-#'Blue == Gamma
-#'Purple == All Irradiated
-#'Green == Unirradiated
-#'Black == All mice
-#'
+#' author Elijah F Edmondson, elijah.edmondson@@gmail.com
 #' @export
 
 plot.hs.color.qtl = function(qtl, bin.width = 1000, color = "black", ...) {
@@ -102,4 +98,4 @@ plot.hs.color.qtl = function(qtl, bin.width = 1000, color = "black", ...) {
         }
         return(new.qtl)
 
-} # plot.hs.purple.qtl
+} # plot.hs.color.qtl

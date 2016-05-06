@@ -2,7 +2,9 @@
 % Please edit documentation in R/HS.Bootstrap.R
 \name{HS.assoc.bootstrap}
 \alias{HS.assoc.bootstrap}
-\title{For experimental cross data on n individuals, one makes n draws, with replacement,
+\title{QTL Confidence Interval with Resample Model Averaging
+
+For experimental cross data on n individuals, one makes n draws, with replacement,
 from the observed individuals to form a new data set in which some individuals are
 omitted and some appear multiple times. An estimate of QTL location is calculated
 with these new data, and the process is repeated many times. A ∼95% confidence
@@ -10,10 +12,12 @@ interval for the location of the QTL is obtained as the interval containing 95%
 of the estimated locations from the bootstrap replicates. Visscher et al. (1996)}
 \usage{
 HS.assoc.bootstrap(perms, chr, pheno, pheno.col, probs, K, addcovar, markers,
-  snp.file, outdir = "~/Desktop/", peakMB = NULL, tx = "",
+  snp.file, outdir = "~/Desktop/", peakMB, window = 8e+06, tx = "",
   sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/")
 }
-\description{
-Arguments:
+\arguments{
+\item{Window, }{determines the evaluation window around each peak (Mb)
+
+Arguments:}
 }
 
