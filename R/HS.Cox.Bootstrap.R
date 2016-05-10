@@ -24,6 +24,7 @@ HS.cox.bootstrap = function(perms, chr, pheno, pheno.col, days.col, probs, K, ad
         plot.title = paste("Bootstrap ", tx, " ", pheno.col, " ", "(Chr ", chr, "):", sep = "")
         print(paste(plot.title, Sys.time()))
 
+        load(file = paste0(sanger.dir, "probs", chr, ".Rdata"))
 
         samples = intersect(rownames(pheno), rownames(probs))
         samples = intersect(samples, rownames(addcovar))
@@ -92,16 +93,16 @@ HS.cox.bootstrap = function(perms, chr, pheno, pheno.col, days.col, probs, K, ad
 
                         top = max(-log10(result$pv))
                         MAX.LOD = result$POS[which(-log10(result$pv) == top)]
+                        MegaBase = (min(MAX.LOD) + max(MAX.LOD))/2000000
 
-                        print(paste(((min(MAX.LOD) + max(MAX.LOD))/2000000), "Mb"))
+                        print(paste((round(MegaBase, digits = 2)), "Mb: LOD", round(top, digits = 2)))
                         if (MAX.LOD > (peakMB - (window/2)) & MAX.LOD < (peakMB + (window/2))) break
 
                 }
 
 
 
-                print(paste0("Accepted locus: ", ((min(MAX.LOD) + max(MAX.LOD))/2000000), " Mb"))
-                #print(paste("located between", min(MAX.LOD), "and ", max(MAX.LOD), "bp."))
+                print(paste0("Accepted locus: ", (round(MegaBase, digits = 2)), " Mb"))
 
 
 
@@ -114,11 +115,12 @@ HS.cox.bootstrap = function(perms, chr, pheno, pheno.col, days.col, probs, K, ad
 
         print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
                     "hours elapsed during analysis"))
+
         quant = quantile(permutations[,4], c(0.025,0.975))
         print(paste("95% Confidence Interval for QTL:", min(quant), "-", max(quant)))
-        print(paste("Interval =", (max(quant) - min(quant))))
+        print(paste("Interval =", (round((((max(quant) - min(quant))/1000000)), digits = 2)), "Mb"))
 
-        return(permutations)
+return(permutations)
 
 
 } #HS.cox.bootstrap
