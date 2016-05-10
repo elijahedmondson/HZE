@@ -91,14 +91,15 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
                                 top = max(-log10(result$pv))
                                 MAX.LOD = result$POS[which(-log10(result$pv) == top)]
 
+                                print(paste(((min(MAX.LOD) + max(MAX.LOD))/2000000), "Mb"))
                                 if (MAX.LOD > (peakMB - (window/2)) & MAX.LOD < (peakMB + (window/2))) break
 
-                                }
+                        }
 
 
 
-                        print(paste0("Maximum LOD score on Chr ", chr, " is ", top))
-                        print(paste("located between", min(MAX.LOD), "and ", max(MAX.LOD), "bp."))
+                        print(paste0("Accepted locus: ", ((min(MAX.LOD) + max(MAX.LOD))/2000000), " Mb"))
+                        #print(paste("located between", min(MAX.LOD), "and ", max(MAX.LOD), "bp."))
 
 
 
@@ -111,7 +112,9 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
 
                 print(paste(round(difftime(Sys.time(), begin, units = 'hours'), digits = 2),
                             "hours elapsed during analysis"))
-
+                quant = quantile(permutations[,4], c(0.025,0.975))
+                print(paste("95% Confidence Interval for QTL:", min(quant), "-", max(quant)))
+                print(paste("Interval =", (max(quant) - min(quant))))
                 return(permutations)
 
 

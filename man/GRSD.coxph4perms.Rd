@@ -4,7 +4,7 @@
 \alias{GRSD.coxph4perms}
 \title{Association mapping with survival outcomes using the CoxPH model.}
 \usage{
-GRSD.coxph4perms(obj, pheno, pheno.col, days.col, addcovar, tx, sanger.dir)
+GRSD.coxph4perms(obj, pheno, pheno.col, chr, days.col, addcovar, tx, sanger.dir)
 }
 \description{
 Association mapping with survival outcomes using the CoxPH model.
