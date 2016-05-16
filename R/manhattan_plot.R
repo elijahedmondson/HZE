@@ -35,8 +35,15 @@ manhattan_plot = function (pval, bp, chr, groups = NULL, cutoff = NULL, xlab = "
         nCHR <- lu(dat$CHR)
         adj <- rep(c(0, maxes.cumsum[-nCHR]), times = reptimes)
         dat$relBP <- dat$BP + adj
-        cols <- c("#8c53c6", "#8c53c6", "#8c53c6", "#8c53c6", "#e66c79",
-                  "#e66c79", "#e66c79", "#e66c79", "#e66c79", "#419fde")
+        
+        ##### GAMMA        == BLUE   (#1F78B4 (.122, .471, .706),  #419fde (.255, .624, .871)) #####
+        ##### HZE          == RED    (#DB2B3D (.859, .169, .239),  #e66c79 (.902, .424, .475)) #####
+        ##### ALL.IRR      == PURPLE (#663399 (.4, .2, .6),        #8c53c6 (.549, .325, .776)) #####
+        ##### UNIRRADIATED == GREEN  (#33A02C (.2, .627, .173),    #53ce4b (.325, .808 ,.294)) #####
+        
+        cols <- c("#000000", "#8c53c6", "#000000", "#419fde", "#000000",
+                  "#000000", "#000000", "#e66c79", "#000000", "#53ce4b")
+        
         cols <- cols[c(1, 2, 7, 8, 9, 10, 3, 4, 5, 6, 11, 12)]
         if (is.null(groups)) {
                 cols <- c("grey50", "grey15")
