@@ -81,15 +81,35 @@ GRSD.coxph = function(pheno, pheno.col, days.col, probs, K, addcovar, markers, s
         sanger.dir = sanger.dir
 
         for(i in 1:19) {
-                print(paste("CHROMOSOME", i))
-                timechr <- Sys.time()
-                result[[i]] = GRSDcoxph(data[[i]], pheno, pheno.col, surv, addcovar, tx, sanger.dir)
-                print(paste(round(difftime(Sys.time(), timechr, units = 'mins'), digits = 2),
-                            "minutes..."))
+                tryCatch({
+                        print(paste("CHROMOSOME", i))
+                        timechr <- Sys.time()
+                        result[[i]] = GRSDcoxph(data[[i]], pheno, pheno.col, surv, addcovar, tx, sanger.dir)
+                        print(paste(round(difftime(Sys.time(), timechr, units = 'mins'), digits = 2),
+                                    "minutes..."))
+                }, error=function(e){load(file = paste0("~/Desktop/files/random/", i, "random.Rdata"))
+                        chr = i
+                        pv$pv = rep(0)
+                        save(pv, file = paste0(file.prefix, "_chr", chr, ".Rdata"))
+                        png(paste0(file.prefix, "_chr", chr,".png"), width = 2000,
+                            height = 1600, res = 200)
+                        plot(as.numeric(pv[,3]) * 1e-6, -log10(pv[,6]), pch = 20)
+                        mtext(side = 3, line = 0.5, text = paste(plot.title, ": Chr", chr))
+                        dev.off()})
         } #for(i)
 
         print("X CHROMOSOME")
-        result[["X"]] = GRSDcoxph.xchr(data[["X"]], pheno, pheno.col, surv, addcovar, tx, sanger.dir)
+        tryCatch({
+                result[["X"]] = GRSDcoxph.xchr(data[["X"]], pheno, pheno.col, surv, addcovar, tx, sanger.dir)
+        }, error=function(e){load(file = "~/Desktop/files/random/Xrandom.Rdata")
+                chr = "X"
+                pv$pv = rep(0)
+                save(pv, file = paste0(file.prefix, "_chr", chr, ".Rdata"))
+                png(paste0(file.prefix, "_chr", chr,".png"), width = 2000,
+                    height = 1600, res = 200)
+                plot(as.numeric(pv[,3]) * 1e-6, -log10(pv[,6]), pch = 20)
+                mtext(side = 3, line = 0.5, text = paste(plot.title, ": Chr", chr))
+                dev.off()})
 
         print(paste(round(difftime(Sys.time(), begin, units = 'mins'), digits = 1),
                     "minutes elapsed during mapping."))

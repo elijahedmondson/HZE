@@ -53,50 +53,53 @@ HS.cox.bootstrap = function(perms, chr, pheno, pheno.col, days.col, probs, K, ad
                 print(p)
 
                 repeat {
-                        phenoperm = data.frame(pheno[sample(nrow(pheno), replace = TRUE), ],
-                                               check.names = FALSE, check.rows = FALSE)
-                        sanger.dir = sanger.dir
-                        ### FROM DG ###
+                        tryCatch({
+                                phenoperm = data.frame(pheno[sample(nrow(pheno), replace = TRUE), ],
+                                                       check.names = FALSE, check.rows = FALSE)
+                                sanger.dir = sanger.dir
+                                ### FROM DG ###
 
-                        samples = sub("\\.[0-9]$", "", rownames(phenoperm))
-                        probsperm = probs[samples,,]
-                        rownames(probsperm) = make.unique(rownames(probsperm))
-
-
-                        Kperm = K
-                        Kperm = K[samples,samples,drop = FALSE]
-                        rownames(Kperm) = make.unique(rownames(Kperm))
+                                samples = sub("\\.[0-9]$", "", rownames(phenoperm))
+                                probsperm = probs[samples,,]
+                                rownames(probsperm) = make.unique(rownames(probsperm))
 
 
-                        ### Move the model into the loop REGRESSION MODEL ###
-
-                        Kperm = Kperm[samples, samples]
-                        chrs = chr
-                        data = vector("list", length(chrs))
-                        names(data) = chrs
-
-                        rng = which(markers[,2] == chrs)
-                        data = list(probsperm = probsperm, Kperm = Kperm,
-                                    markers = markers[rng,])
-
-                        result = vector("list", length(data))
-                        names(result) = names(data)
-                        rm(probsperm, Kperm)
+                                Kperm = K
+                                Kperm = K[samples,samples,drop = FALSE]
+                                rownames(Kperm) = make.unique(rownames(Kperm))
 
 
+                                ### Move the model into the loop REGRESSION MODEL ###
 
-                        ### WORK HORSE ###
-                        ### ONLY RETURN POS WITHIN 8 MB WINDOW AROUND PEAK ###
+                                Kperm = Kperm[samples, samples]
+                                chrs = chr
+                                data = vector("list", length(chrs))
+                                names(data) = chrs
+
+                                rng = which(markers[,2] == chrs)
+                                data = list(probsperm = probsperm, Kperm = Kperm,
+                                            markers = markers[rng,])
+
+                                result = vector("list", length(data))
+                                names(result) = names(data)
+                                rm(probsperm, Kperm)
 
 
-                        result = GRSD.coxph4perms(data, chr = chr, pheno = phenoperm, pheno.col, days.col, addcovar, tx, sanger.dir)
 
-                        top = max(-log10(result$pv))
-                        MAX.LOD = result$POS[which(-log10(result$pv) == top)]
-                        MegaBase = (min(MAX.LOD) + max(MAX.LOD))/2000000
+                                ### WORK HORSE ###
+                                ### ONLY RETURN POS WITHIN 8 MB WINDOW AROUND PEAK ###
 
-                        print(paste((round(MegaBase, digits = 2)), "Mb: LOD", round(top, digits = 2)))
-                        if (MAX.LOD > (peakMB - (window/2)) & MAX.LOD < (peakMB + (window/2))) break
+
+                                result = GRSD.coxph4perms(data, chr = chr, pheno = phenoperm, pheno.col, days.col, addcovar, tx, sanger.dir)
+
+                                top = max(-log10(result$pv))
+                                MAX.LOD = result$POS[which(-log10(result$pv) == top)]
+                                MegaBase = (min(MAX.LOD) + max(MAX.LOD))/2000000
+
+                                print(paste((round(MegaBase, digits = 2)), "Mb: LOD", round(top, digits = 2)))
+                                if (MAX.LOD > (peakMB - (window/2)) & MAX.LOD < (peakMB + (window/2))) break
+                        }, error=function(e){})
+
 
                 }
 
