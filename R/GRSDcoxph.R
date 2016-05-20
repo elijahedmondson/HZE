@@ -9,9 +9,8 @@ GRSDcoxph = function(obj, pheno, pheno.col, surv, addcovar, tx, sanger.dir) {
 
         setwd(outdir)
 
-        file.prefix = paste(tx, pheno.col, sep = "_")
-
-        plot.title = paste(tx, pheno.col, sep = " ")
+        file.prefix = paste("CoxPH", tx, pheno.col, sep = "_")
+        plot.title = paste("CoxPH", tx, pheno.col, sep = " ")
 
         strains = sub("/", "_", hs.colors[,2])
 

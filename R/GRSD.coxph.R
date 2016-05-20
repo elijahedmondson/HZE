@@ -36,8 +36,8 @@ GRSD.coxph = function(pheno, pheno.col, days.col, probs, K, addcovar, markers, s
         addcovar = addcovar[samples,,drop = FALSE]
         probs = probs[samples,,,drop = FALSE]
 
-        file.prefix = paste(tx, pheno.col, sep = "_")
-        plot.title = paste(tx, pheno.col, sep = " ")
+        file.prefix = paste("CoxPH", tx, pheno.col, sep = "_")
+        plot.title = paste("CoxPH", tx, pheno.col, sep = " ")
         print(plot.title)
 
         # COX PH MODEL #
@@ -89,7 +89,7 @@ GRSD.coxph = function(pheno, pheno.col, days.col, probs, K, addcovar, markers, s
                                     "minutes..."))
                 }, error=function(e){load(file = paste0("~/Desktop/files/random/", i, "random.Rdata"))
                         chr = i
-                        pv$pv = rep(0)
+                        pv$pv = rep(1)
                         save(pv, file = paste0(file.prefix, "_chr", chr, ".Rdata"))
                         png(paste0(file.prefix, "_chr", chr,".png"), width = 2000,
                             height = 1600, res = 200)
@@ -103,7 +103,7 @@ GRSD.coxph = function(pheno, pheno.col, days.col, probs, K, addcovar, markers, s
                 result[["X"]] = GRSDcoxph.xchr(data[["X"]], pheno, pheno.col, surv, addcovar, tx, sanger.dir)
         }, error=function(e){load(file = "~/Desktop/files/random/Xrandom.Rdata")
                 chr = "X"
-                pv$pv = rep(0)
+                pv$pv = rep(1)
                 save(pv, file = paste0(file.prefix, "_chr", chr, ".Rdata"))
                 png(paste0(file.prefix, "_chr", chr,".png"), width = 2000,
                     height = 1600, res = 200)
@@ -163,6 +163,8 @@ GRSD.coxph = function(pheno, pheno.col, days.col, probs, K, addcovar, markers, s
         } # for(i)
         mtext(side = 1, line = 0.5, at = chrmid, text = names(chrlen), cex = 1.5)
         dev.off()
+
+        save(result, file.prefix, file = paste0(file.prefix, "_QTL.Rdata"))
 
         # Convert to GRangesList for storage
         chrs = c(1:19, "X")

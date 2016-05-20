@@ -10,9 +10,8 @@ GRSDcoxph.xchr = function(obj, pheno, pheno.col, surv, addcovar, tx, sanger.dir)
 
         strains = sub("/", "_", hs.colors[,2])
 
-        file.prefix = paste(tx, pheno.col, sep = "_")
-
-        plot.title = paste(tx, pheno.col, sep = " ")
+        file.prefix = paste("CoxPH", tx, pheno.col, sep = "_")
+        plot.title = paste("CoxPH", tx, pheno.col, sep = " ")
 
         load(file = paste0(sanger.dir, "X.Rdata"))
 
