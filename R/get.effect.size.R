@@ -51,19 +51,25 @@ get.effect.size = function(pheno = pheno, pheno.col, probs = probs, sdp.file = "
                 load(file = files[j])
                 print(files[j])
                 for(i in 1:19) {
-                        # Get the SNP at the minimum p-value.
+
+                        # Determine most significant SNP and LOD score on the chromosome of interest.
+                        SNP = qtl[[i]]@ranges@start[which.min(qtl[[i]]@elementMetadata@listData$p.value)]
+                        LOD = -log10(qtl[[i]]@elementMetadata@listData$p.value[which(qtl[[i]]@ranges@start == SNP)])
+
+                        # Get the nearest SNP in the SDP file that corresponds to SNP of interest (This is necessary
+                        # in order to estimate imputed SNPs using only the SNPs on the SDP file).
                         qtli = as.data.frame(qtl[[i]])
                         qtli = qtli[match(markers$Mb_NCBI38, qtli$start, nomatch=0),]
                         stopifnot(length(qtli) > 0)
-                        SNP = qtli$start[which.min(qtli$p.value)]
-                        LOD = -log10(qtli$p.value[which(qtli$start == SNP)])
+                        SNP1 = qtli$start[which(abs(qtli$start-SNP)==min(abs(qtli$start-SNP)))]
+
 
                         # Run the loop for all significant loci
                         if(LOD > threshold) {
 
                                 # Read in the unique SDPs.
                                 tf = TabixFile(file = sdp.file)
-                                sdps = scanTabix(file = sdp.file, param = GRanges(seqnames = i, ranges = SNP))[[1]]
+                                sdps = scanTabix(file = sdp.file, param = GRanges(seqnames = i, ranges = SNP1))[[1]]
                                 sdps = strsplit(sdps, split = "\t")
                                 sdps = matrix(unlist(sdps), ncol = 3, byrow = T)
                                 chr  = sdps[1,1]
@@ -122,7 +128,7 @@ get.effect.size = function(pheno = pheno, pheno.col, probs = probs, sdp.file = "
                                                mod1$aic, R2$CoxSnell, R2$Nagelkerke, R2$McFadden, R2$Tjur, R2$sqPearson, D2)
                                 print(EFFECT)
                                 write.csv(EFFECT, file = paste0(files[j], "QTL", ".csv"))
-                                rm(qtl, qtli, LOD, oddsCI, ANOVA, mod1, mod0, R2, D2)
+                                rm(qtl, qtli, LOD, oddsCI, ANOVA, mod1, mod0, R2, D2, SNP, SNP1)
                         }
 
                 }
