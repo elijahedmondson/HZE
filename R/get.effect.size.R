@@ -2,7 +2,7 @@
 #' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @export
 
-get.effect.size = function(pheno = pheno, pheno.col, chr, probs = probs, sdp.file = "~/Desktop/R/QTL/WD/HS_Sanger_SDPs.txt.bgz",
+get.effect.size = function(pheno = pheno, pheno.col, probs = probs, sdp.file = "~/Desktop/R/QTL/WD/HS_Sanger_SDPs.txt.bgz",
                            markers, threshold = 5.05, dir = "/Users/elijah/Desktop/R/QTL/WD/2.\ Binomial\ Mapping/")
 {
         library(Rsamtools)
@@ -51,19 +51,19 @@ get.effect.size = function(pheno = pheno, pheno.col, chr, probs = probs, sdp.fil
                 load(file = files[j])
                 print(files[j])
                 for(i in 1:19) {
-                        LOD = -log10(qtl$p.value[which(qtl$start == SNP)])
-                        if(LOD > threshold) {
-                                qtl = as.data.frame(qtl)
-                                qtl = qtl[match(markers$Mb_NCBI38, qtl$start, nomatch=0),]
-                                stopifnot(length(qtl) > 0)
+                        # Get the SNP at the minimum p-value.
+                        qtli = as.data.frame(qtl[[i]])
+                        qtli = qtli[match(markers$Mb_NCBI38, qtli$start, nomatch=0),]
+                        stopifnot(length(qtli) > 0)
+                        SNP = qtli$start[which.min(qtli$p.value)]
+                        LOD = -log10(qtli$p.value[which(qtli$start == SNP)])
 
-                                # Get the SNP at the minimum p-value.
-                                SNP = qtl$start[which.min(qtl$p.value)]
-                                LOD = -log10(qtl$p.value[which(qtl$start == SNP)])
+                        # Run the loop for all significant loci
+                        if(LOD > threshold) {
 
                                 # Read in the unique SDPs.
                                 tf = TabixFile(file = sdp.file)
-                                sdps = scanTabix(file = sdp.file, param = GRanges(seqnames = chr, ranges = SNP))[[1]]
+                                sdps = scanTabix(file = sdp.file, param = GRanges(seqnames = i, ranges = SNP))[[1]]
                                 sdps = strsplit(sdps, split = "\t")
                                 sdps = matrix(unlist(sdps), ncol = 3, byrow = T)
                                 chr  = sdps[1,1]
@@ -121,8 +121,8 @@ get.effect.size = function(pheno = pheno, pheno.col, chr, probs = probs, sdp.fil
                                 EFFECT[i,] = c(pheno.col, chr, SNP, LOD, odds[3], oddsCI[3], oddsCI[6], ANOVA$`Pr(>Chi)`[2],
                                                mod1$aic, R2$CoxSnell, R2$Nagelkerke, R2$McFadden, R2$Tjur, R2$sqPearson, D2)
                                 print(EFFECT)
-                                write.csv(LODmat, file = paste0(files[j], "QTL", ".csv"))
-                                rm(qtl, LOD, oddsCI, ANOVA, mod1, mod0, R2, D2, AIC)
+                                write.csv(EFFECT, file = paste0(files[j], "QTL", ".csv"))
+                                rm(qtl, qtli, LOD, oddsCI, ANOVA, mod1, mod0, R2, D2)
                         }
 
                 }
