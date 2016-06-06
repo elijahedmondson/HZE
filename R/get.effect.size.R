@@ -2,16 +2,19 @@
 #' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' @export
 
-get.effect.size = function(pheno, pheno.col, chr, qtl, probs, sdp.file = "~/Desktop/R/QTL/WD/HS_Sanger_SDPs.txt.bgz",
-                           markers, dir = "/Users/elijah/Desktop/R/QTL/WD/3.\ CoxPH\ Mapping/")
+get.effect.size = function(pheno = pheno, pheno.col, chr, probs = probs, sdp.file = "~/Desktop/R/QTL/WD/HS_Sanger_SDPs.txt.bgz",
+                           markers, dir = "/Users/elijah/Desktop/R/QTL/WD/2.\ Binomial\ Mapping/")
 {
         library(Rsamtools)
 
         #Create the matrix in which all data will be stored
-        EFFECT = matrix(0, nrow = 1000, ncol = 4, dimnames = list(1:20, c("PHENOTYPE", "CHR", "SNP", "LOD", "Effect Size", "ODDS", "2.5% ODDS", "97.5% ODDS")))
-
+        EFFECT = matrix(0, nrow = 1000, ncol = 8, dimnames = list(1:1000, c("PHENOTYPE", "CHR", "SNP", "LOD", "Effect Size", "ODDS", "2.5% ODDS", "97.5% ODDS")))
         #Enter the directory of QTL files
         files <- (Sys.glob(paste0(dir,"*.Rdata")))
+        # Create a matrix of SDPs.
+        sdp.mat = matrix(as.numeric(intToBits(1:2^8)), nrow = 32)
+        sdp.mat = sdp.mat[8:1,]
+        dimnames(sdp.mat) = list(LETTERS[1:8], 1:2^8)
 
         for(j in 1:length(files)){
 
@@ -35,20 +38,6 @@ get.effect.size = function(pheno, pheno.col, chr, qtl, probs, sdp.file = "~/Desk
                 chr  = sdps[1,1]
                 pos  = as.numeric(sdps[,2])
                 sdps = as.numeric(sdps[,3])
-
-                # Create a matrix of SDPs.
-                sdp.mat = matrix(as.numeric(intToBits(1:2^8)), nrow = 32)
-                sdp.mat = sdp.mat[8:1,]
-                dimnames(sdp.mat) = list(LETTERS[1:8], 1:2^8)
-
-                #snp = sdp.mat[,8]
-                #snp = t(snp)
-                #row.names(snp) = hs.colors[,2]
-
-
-
-                # Get the SNP at the minimum p-value.
-
 
                 get.genotype = function(chr, pos, snp, markers, probs) {
 
