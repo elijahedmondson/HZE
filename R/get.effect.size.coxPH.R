@@ -41,10 +41,9 @@ get.effect.size.coxPH = function(pheno = pheno, pheno.col, days.col = days, prob
         for(j in 1:length(files)){
                 #Create the matrix in which all data will be stored
                 EFFECT = matrix(0, nrow = 20, ncol = 15,
-                                dimnames = list(1:20, c("PHENOTYPE", "CHR", "SNP", "LOD", "ODDS",
-                                                        "2.5% ODDS", "97.5% ODDS", "ANOVA Pr(>Chi)",
-                                                        "AIC", "CoxSnell", "Nagelkerke", "McFadden",
-                                                        "Tjur","sqPearson", "sqD")))
+                                dimnames = list(1:20, c("PHENOTYPE", "CHR", "SNP", "LOD", "KM P.value",
+                                                        "Effect Size", "2.5% Effect Size", "97.5% Effect Size",
+                                                        "Hazard", "Hazard Ratio")))
                 load(file = files[j])
                 print(files[j])
                 for(i in 1:19) {
@@ -73,7 +72,10 @@ get.effect.size.coxPH = function(pheno = pheno, pheno.col, days.col = days, prob
                                                             markers = markers,
                                                             probs = probs)
                                         geno = round(geno, digits = 1)
-                                        geno
+                                        geno1 = ifelse(geno < 0.25, "AA",
+                                                ifelse(geno >=.25 & geno <= 0.75, "AB",
+                                                ifelse(geno > .75, "BB",
+                                                       NA)))
 
 
                                         # Fit the model.
@@ -83,7 +85,7 @@ get.effect.size.coxPH = function(pheno = pheno, pheno.col, days.col = days, prob
                                         stopifnot(length(samples) > 0)
                                         pheno = pheno[samples,,drop = FALSE]
                                         addcovar = addcovar[samples,,drop = FALSE]
-                                        geno = geno[samples,,drop = FALSE]
+                                        geno1 = geno1[samples,,drop = FALSE]
                                         addcovar = addcovar[samples,,drop = FALSE]
                                         #probs = probs[samples,,,drop = FALSE]
 
@@ -107,17 +109,20 @@ get.effect.size.coxPH = function(pheno = pheno, pheno.col, days.col = days, prob
                                         # and alternatives to the generalized R-squared will be discussed. SCHEMPER 1996
 
                                         surv = Surv(pheno[,days.col], pheno[,pheno.col])
+                                        fit = survfit(surv ~ geno1)
 
-                                        fit = survfit(surv ~ geno)
-                                        plot(fit, col = 1:2, las = 1, main = paste0(pheno.col, ": chr ", chr, " bp ", SNP))
+                                        plot(fit, col = 1:3, las = 1, main = paste0(pheno.col, ": chr ", chr, " bp ", SNP))
                                         legend("bottomleft", col = 1:3, lty = 1, legend = c("AA", "AB", "BB"))
-                                        mod0 = coxphw(surv ~ addcovar)
-                                        mod1 = coxphw(surv ~ addcovar + geno)
-                                        text(x = 25, y = 0.15, labels = paste("p =", format(anova(mod)[2,4], digits = 2)), adj = 0)
+                                        mod = coxph(surv ~ geno1)
+                                        summary(mod)
+                                        text(x = 35, y = 0.25, labels = paste("p =", format(anova(mod)[2,4], digits = 2)), adj = 0)
 
+                                        fit1 = coxphw(surv ~ geno1, data = pheno, template = "PH")
+                                        mod1 = coxph(surv ~ geno1, data = pheno, template = "PH")
+                                        concord = concord(fit1)
 
-                                        EFFECT[i,] = c(pheno.col, chr, SNP, LOD, odds[3], oddsCI[3], oddsCI[6], ANOVA$`Pr(>Chi)`[2],
-                                                       mod1$aic, R2$CoxSnell, R2$Nagelkerke, R2$McFadden, R2$Tjur, R2$sqPearson, D2)
+                                        EFFECT[i,] = c(pheno.col, chr, SNP, LOD, format(anova(mod)[2,4]), concord[,1], concord[,2], concord[,3],
+                                                       mod$coefficients[2], exp(mod$coefficients[2]))
                                         print(EFFECT[i,])
                                         rm(LOD, oddsCI, ANOVA, mod1, mod0, R2, D2, SNP)
                                 }
