@@ -1,10 +1,10 @@
-#' @title Association mapping on autosomal chromosomes with binary variable outcomes.
+#' @title Regressing out a peak.
 #'
 #' @author Elijah F Edmondson, \email{elijah.edmondson@@gmail.com}
 #' Performs association mapping in multiparent mouse populations.
 #' @export
 
-GRSDbinom.regressGENO = function(obj, pheno, pheno.col, addcovar, tx) {
+GRSDbinom.regressGENO = function(obj, pheno, pheno.col, addcovar, tx, geno, snp) {
 
         chr = obj$markers[1,2]
 
@@ -16,45 +16,10 @@ GRSDbinom.regressGENO = function(obj, pheno, pheno.col, addcovar, tx) {
 
         strains = sub("/", "_", hs.colors[,2])
 
-        hdr = scanVcfHeader(snp.file)
-        gr = GRanges(seqnames = chr, range = IRanges(start = 0,
-                                                     end = 200e6))
-        param = ScanVcfParam(geno = c("GT", "FI"), fixed = "ALT",
-                             samples = strains[strains != "C57BL_6J"], which = gr)
-        sanger = readVcf(file = snp.file, genome = "mm10", param = param)
+        load(file = paste0(sanger.dir, chr, ".Rdata"))
 
-        # Keep high quality SNPs (quality == 1)
-        sanger = sanger[rowSums(geno(sanger)$FI, na.rm = TRUE) == 7]
-
-        # Keep polymorphic SNPs.
-        keep = which(rowSums(geno(sanger)$GT == "0/0", na.rm = TRUE) < 7)
-        sanger = sanger[keep]
-        rm(keep)
-
-        # We have to do some work to extract the alternate allele.
-        alt = CharacterList(fixed(sanger)$ALT)
-        alt = unstrsplit(alt, sep = ",")
-
-
-        sanger.hdr = data.frame(ID = names(rowRanges(sanger)), CHR = as.character(seqnames(sanger)),
-                                POS = start(sanger), REF = as.character(fixed(sanger)$REF),
-                                ALT = alt, stringsAsFactors = FALSE)
-        rm(alt)
-
-
-        sanger = cbind(geno(sanger)$GT[,1:4,drop = FALSE],
-                       "C57BL_6J" = "0/0",
-                       geno(sanger)$GT[,5:7,drop = FALSE])
-
-        sanger = (sanger != "0/0") * 1
-
-        # Make the MAF between 1/8 and 4/8.
-        flip = which(rowSums(sanger) > 4)
-        sanger[flip,] = 1 - sanger[flip,,drop = FALSE]
-        rm(flip)
-
-        null.mod = glm(pheno[,pheno.col] ~ addcovar, family = binomial(logit))
-        #null.mod = glm(trait ~ addcovar, family = poisson(link = "log"))
+        #null.mod = glm(pheno[,pheno.col] ~ addcovar, family = binomial(logit))
+        null.mod = glm(pheno[,pheno.col] ~ addcovar + geno, family = binomial(logit))
         null.ll = logLik(null.mod)
         pv = rep(0, nrow(sanger))
 
@@ -78,8 +43,8 @@ GRSDbinom.regressGENO = function(obj, pheno, pheno.col, addcovar, tx) {
                 for(j in sdps.to.use) {
 
 
-                        full.mod = glm(pheno[,pheno.col] ~ addcovar + cur.alleles[j,], family = binomial(logit))
-                        #full.mod = glm(trait ~ addcovar + cur.alleles[j,], family = poisson(link = "log"))
+                        #full.mod = glm(pheno[,pheno.col] ~ addcovar + cur.alleles[j,], family = binomial(logit))
+                        full.mod = glm(pheno[,pheno.col] ~ addcovar + geno + cur.alleles[j,], family = binomial(logit))
                         cur.ll[j] = logLik(full.mod)
 
                 } # for(j)
@@ -128,11 +93,12 @@ GRSDbinom.regressGENO = function(obj, pheno, pheno.col, addcovar, tx) {
         pv = pchisq(2 * pv, df = 1, lower.tail = FALSE)
         pv = data.frame(sanger.hdr, pv, stringsAsFactors = FALSE)
 
-        save(pv, file = paste0(file.prefix, "_chr", chr, ".Rdata"))
+        #save(pv, file = paste0(file.prefix, "_chr", chr, ".Rdata"))
 
-        png(paste0(file.prefix, "_chr", chr,".png"), width = 2000,
-            height = 1600, res = 200)
-        plot(as.numeric(pv[,3]) * 1e-6, -log10(pv[,6]), pch = 20)
+        png(paste0(file.prefix, "_chr", chr, "SNP", snp, ".png"), width = 3000,
+            height = 1000, res = 200)
+        plot(as.numeric(pv[,3]) * 1e-6, -log10(pv[,6]), pch = 20, ylim = c(0, 10))
+        abline(a = 5.73, b = 0, col = "grey")
         mtext(side = 3, line = 0.5, text = paste(plot.title, ": Chr", chr))
         dev.off()
 
