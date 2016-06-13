@@ -6,7 +6,7 @@ get.effect.size = function(pheno = pheno, pheno.col, probs = probs, sdp.file = "
                            markers, threshold = 5.05, dir = "/Users/elijah/Desktop/R/QTL/WD/2.\ Binomial\ Mapping/")
 {
         library(Rsamtools)
-
+        #load("/Users/elijah/Desktop/R/QTL/WD/hs.colors.Rdata")
         #Enter the directory of QTL files
         files <- (Sys.glob(paste0(dir,"*.Rdata")))
 
@@ -121,7 +121,7 @@ get.effect.size = function(pheno = pheno, pheno.col, probs = probs, sdp.file = "
                                         print(EFFECT[i,])
                                         rm(LOD, oddsCI, ANOVA, mod1, mod0, R2, D2, SNP)
                                 }
-                        }, error=function(e){print(ERROR)})
+                        }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 
                         
                 }
