@@ -4,8 +4,7 @@
 #' Performs association mapping in multiparent mouse populations.
 #' @export
 
-GRSDpoisson = function(obj, pheno, pheno.col, tx) {
-
+GRSDpoisson = function(obj, pheno, pheno.col, addcovar, tx, sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/") {
         chr = obj$markers[1,2]
 
         setwd(outdir)
@@ -16,42 +15,7 @@ GRSDpoisson = function(obj, pheno, pheno.col, tx) {
 
         strains = sub("/", "_", hs.colors[,2])
 
-        hdr = scanVcfHeader(snp.file)
-        gr = GRanges(seqnames = chr, range = IRanges(start = 0,
-                                                     end = 200e6))
-        param = ScanVcfParam(geno = c("GT", "FI"), fixed = "ALT",
-                             samples = strains[strains != "C57BL_6J"], which = gr)
-        sanger = readVcf(file = snp.file, genome = "mm10", param = param)
-
-        # Keep high quality SNPs (quality == 1)
-        sanger = sanger[rowSums(geno(sanger)$FI, na.rm = TRUE) == 7]
-
-        # Keep polymorphic SNPs.
-        keep = which(rowSums(geno(sanger)$GT == "0/0", na.rm = TRUE) < 7)
-        sanger = sanger[keep]
-        rm(keep)
-
-        # We have to do some work to extract the alternate allele.
-        alt = CharacterList(fixed(sanger)$ALT)
-        alt = unstrsplit(alt, sep = ",")
-
-
-        sanger.hdr = data.frame(ID = names(rowRanges(sanger)), CHR = as.character(seqnames(sanger)),
-                                POS = start(sanger), REF = as.character(fixed(sanger)$REF),
-                                ALT = alt, stringsAsFactors = FALSE)
-        rm(alt)
-
-
-        sanger = cbind(geno(sanger)$GT[,1:4,drop = FALSE],
-                       "C57BL_6J" = "0/0",
-                       geno(sanger)$GT[,5:7,drop = FALSE])
-
-        sanger = (sanger != "0/0") * 1
-
-        # Make the MAF between 1/8 and 4/8.
-        flip = which(rowSums(sanger) > 4)
-        sanger[flip,] = 1 - sanger[flip,,drop = FALSE]
-        rm(flip)
+        load(file = paste0(sanger.dir, chr, ".Rdata"))
 
         #null.mod = glm(pheno[,pheno.col] ~ addcovar, family = binomial(logit))
         null.mod = glm(pheno[,pheno.col] ~ addcovar, family = poisson(link = "log"))
@@ -125,7 +89,7 @@ GRSDpoisson = function(obj, pheno, pheno.col, tx) {
         } # if(length(snp.rng) > 0)
 
         # Convert LRS to p-values using the chi-squared distribution.
-        pv = pchisq(2 * pv, df = 1, lower.tail = FALSE)
+        pv = pchisq(7 * pv, df = 1, lower.tail = FALSE)
         pv = data.frame(sanger.hdr, pv, stringsAsFactors = FALSE)
 
         save(pv, file = paste0(file.prefix, "_chr", chr, ".Rdata"))
