@@ -4,9 +4,7 @@
 #' Performs association mapping in multiparent mouse populations.
 #' @export
 
-
 GRSDpoisson.xchr = function(obj, pheno, pheno.col, addcovar, tx, sanger.dir = "~/Desktop/R/QTL/WD/HS.sanger.files/") {
-
         chr = obj$markers[1,2]
 
         setwd(outdir)
@@ -96,13 +94,13 @@ GRSDpoisson.xchr = function(obj, pheno, pheno.col, addcovar, tx, sanger.dir = "~
         } # if(length(snp.rng) > 0)
 
         # Convert LRS to p-values using the chi-squared distribution.
-        pv = pchisq(2 * pv, df = 1, lower.tail = FALSE)
+        pv = pchisq(1 * pv, df = 4, lower.tail = FALSE)
         pv = data.frame(sanger.hdr, pv, stringsAsFactors = FALSE)
 
         save(pv, file = paste0(file.prefix, "_chr", chr, ".Rdata"))
 
         png(paste0(file.prefix, "_chr", chr,".png"), width = 2600,
-            height = 1200, res = 130)
+            height = 1600, res = 200)
         plot(as.numeric(pv[,3]) * 1e-6, -log10(pv[,6]), pch = 20)
         mtext(side = 3, line = 0.5, text = paste(plot.title, ": Chr", chr))
         dev.off()

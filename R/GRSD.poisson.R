@@ -79,8 +79,9 @@ GRSD.poisson = function(pheno, pheno.col, probs, K, addcovar, markers, snp.file,
 
         for(i in 1:19) {
                 print(i)
+                begin1 <- Sys.time()
                 result[[i]] = GRSDpoisson(data[[i]], pheno, pheno.col, addcovar, tx, sanger.dir)
-                print(paste(round(difftime(Sys.time(), begin, units = 'mins'), digits = 2),
+                print(paste(round(difftime(Sys.time(), begin1, units = 'mins'), digits = 2),
                             "minutes..."))
         } #for(i)
 
