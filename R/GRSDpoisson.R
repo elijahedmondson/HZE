@@ -89,7 +89,7 @@ GRSDpoisson = function(obj, pheno, pheno.col, addcovar, tx, sanger.dir = "~/Desk
         } # if(length(snp.rng) > 0)
 
         # Convert LRS to p-values using the chi-squared distribution.
-        pv = pchisq(1 * pv, df = 4, lower.tail = FALSE)
+        pv = pchisq(1 * pv, df = 2, lower.tail = FALSE)
         pv = data.frame(sanger.hdr, pv, stringsAsFactors = FALSE)
 
         save(pv, file = paste0(file.prefix, "_chr", chr, ".Rdata"))
