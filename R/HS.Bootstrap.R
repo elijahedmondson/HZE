@@ -90,6 +90,9 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
 
                                 result = GRSDbinom.permsfast(data, pheno = phenoperm, pheno.col, addcovar, tx, sanger.dir)
 
+                                #result = GRSDpoisson(data, pheno = phenoperm, pheno.col, addcovar, tx, sanger.dir)
+                                
+                                
                                 top = max(-log10(result$pv))
                                 MAX.LOD = result$POS[which(-log10(result$pv) == top)]
                                 MegaBase = (min(MAX.LOD) + max(MAX.LOD))/2000000
@@ -102,7 +105,7 @@ HS.assoc.bootstrap = function(perms, chr, pheno, pheno.col, probs, K, addcovar,
 
 
 
-                        print(paste0("Accepted locus: ", (round(MegaBase, digits = 2)), " Mb"))
+                        print(paste0("Accepted locus: ", MegaBase, " Mb"))
 
 
 
